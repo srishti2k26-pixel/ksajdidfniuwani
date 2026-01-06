@@ -229,7 +229,7 @@ loginForm.addEventListener('submit', async (e) => {
         showMessage(loginMessage, 'Login successful! Redirecting...', 'success');
 
         setTimeout(() => {
-            window.location.href = 'dashboard.html';
+            window.location.href = 'lijhgfdxfghbghjuygh.html';
         }, 1200);
 
     } catch (error) {
@@ -243,14 +243,14 @@ loginForm.addEventListener('submit', async (e) => {
 
 // Protect dashboard and enforce email verification
 onAuthStateChanged(auth, (user) => {
-    if (window.location.pathname.includes("dashboard.html")) {
+    if (window.location.pathname.includes("lijhgfdxfghbghjuygh.html")) {
         if (!user) {
             // Not logged in
-            window.location.href = "register.html";
+            window.location.href = "sjniusghcvbiasoijhjg.html";
         } else if (!user.emailVerified) {
             // Logged in but email not verified
             alert("Please verify your email before accessing the dashboard.");
-            window.location.href = "register.html";
+            window.location.href = "sjniusghcvbiasoijhjg.html";
         }
         // else: user is logged in and verified → allow access
     }

@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Student Dashboard | Srishti-2k26</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from
+      "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+    import {
+      getFirestore,
+      doc,
+      getDoc,
+      getDocs,
+      collection,
+      updateDoc,
+      arrayUnion,
+      arrayRemove
+    } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBUoNm0UQOSKm0_s8k_uarYYn5nnbvASs8",
+      authDomain: "srishtiwebapp.firebaseapp.com",
+      projectId: "srishtiwebapp"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    let uid;
+    let selectedEvents = [];
+    
+
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        window.location.href = "sjniusghcvbiasoijhjg.html";
+        return;
+      }
+      uid = user.uid;
+      await loadUser();
+      await loadEvents();
+    });
+
+    async function loadUser() {
+      const snap = await getDoc(doc(db, "users", uid));
+      if (!snap.exists()) return;
+
+      const u = snap.data();
+      selectedEvents = u.selectedEvents || [];
+
+      document.getElementById("name").innerText = u.fullName;
+      document.getElementById("roll").innerText = `Roll No: ${u.rollNumber}`;
+      document.getElementById("dept").innerText =
+        `${u.department} • ${u.degreeName} • ${u.classYear}`;
+        
+      // Update joined events counter
+      document.getElementById("joinedCount").innerText = selectedEvents.length;
+    }
+
+    async function loadEvents() {
+      const container = document.getElementById("events");
+      container.innerHTML = "";
+
+      const snapshot = await getDocs(collection(db, "events"));
+      const eventsCount = snapshot.size;
+      document.getElementById("totalEvents").innerText = `${eventsCount} Programs`;
+      
+      snapshot.forEach(d => {
+        const e = d.data();
+        const joined = selectedEvents.includes(e.title);
+
+        container.innerHTML += `
+          <div class="event-card ${joined ? "joined" : ""}" id="event-${e.title.replace(/\s+/g, '-').replace(/[^\w-]/g, '').toLowerCase()}">
+            <div class="event-icon">
+              <i class="fas ${getEventIcon(e.category)}"></i>
+            </div>
+            <div class="event-details">
+              <div class="event-header">
+                <h4 class="event-title">${e.title}</h4>
+                ${e.category ? `<span class="event-category-badge">${e.category}</span>` : ''}
+              </div>
+              <div class="event-actions">
+                <span class="event-status">${joined ? '<i class="fas fa-check-circle"></i> Registered' : ''}</span>
+                <button class="event-btn ${joined ? 'btn-remove' : 'btn-join'}" 
+        onclick="toggleEvent('${e.title.replace(/'/g, "\\'")}', ${joined}, this)">
+                  <span class="btn-text">${joined ? 'Unregister' : 'Register'}</span>
+                  <span class="btn-loader" style="display: none;">
+                    <i class="fas fa-spinner fa-spin"></i> Processing
+                  </span>
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    function getEventIcon(category) {
+      const icons = {
+        'Music': 'fa-music',
+        'Dance': 'fa-user-group',
+        'Drama': 'fa-masks-theater',
+        'Art': 'fa-palette',
+        'Literary': 'fa-book-open',
+        'Sports': 'fa-trophy',
+        'Food': 'fa-utensils',
+        'Workshop': 'fa-chalkboard-user'
+      };
+      
+      for (const [key, icon] of Object.entries(icons)) {
+        if (category && category.includes(key)) return icon;
+      }
+      return 'fa-calendar-alt';
+    }
+
+    window.toggleEvent = async function (event, joined, button) {
+  // Get button and card elements
+  const btnText = button.querySelector('.btn-text');
+  const btnLoader = button.querySelector('.btn-loader');
+  const eventCard = document.getElementById(`event-${event.replace(/\s+/g, '-').toLowerCase()}`);
+  
+  // Disable THIS button and show loader
+  button.disabled = true;
+  if (btnText) btnText.style.display = 'none';
+  if (btnLoader) btnLoader.style.display = 'inline-flex';
+  button.classList.add('processing');
+  if (eventCard) eventCard.classList.add('processing');
+
+  try {
+    const ref = doc(db, "users", uid);
+
+    if (joined) {
+      await updateDoc(ref, { selectedEvents: arrayRemove(event) });
+    } else {
+      await updateDoc(ref, { selectedEvents: arrayUnion(event) });
+    }
+
+    await loadUser();
+    await loadEvents();
+  } catch (error) {
+    console.error("Error toggling event:", error);
+    // Re-enable THIS button on error
+    button.disabled = false;
+    if (btnText) btnText.style.display = 'inline';
+    if (btnLoader) btnLoader.style.display = 'none';
+    button.classList.remove('processing');
+    if (eventCard) eventCard.classList.remove('processing');
+    
+    // Show error message
+    alert("Failed to update registration. Please try again.");
+  }
+  // No finally block needed - after loadEvents(), new buttons will be created
+};
+
+    window.logout = () => signOut(auth);
+    
+    // Toggle menu on mobile
+    window.toggleMenu = () => {
+      const sidebar = document.querySelector('.sidebar');
+      sidebar.classList.toggle('active');
+    };
+  </script>
+
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --secondary: #64748b;
+      --accent: #0ea5e9;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --error: #ef4444;
+      --dark: #1e293b;
+      --light: #f8fafc;
+      --card-bg: #ffffff;
+      --border: #e2e8f0;
+      --shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.08);
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+    
+    body {
+      background-color: #f1f5f9;
+      color: #334155;
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+    
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: flex;
+      gap: 30px;
+      min-height: calc(100vh - 80px);
+    }
+    
+    /* Header */
+    .header {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: white;
+      padding: 24px 0;
+      margin-bottom: 30px;
+      box-shadow: var(--shadow);
+    }
+    
+    .header-content {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .fest-title {
+      font-size: 1.75rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+    
+    .fest-subtitle {
+      font-size: 0.95rem;
+      opacity: 0.9;
+      margin-top: 4px;
+    }
+    
+    .user-welcome {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .user-avatar {
+      width: 40px;
+      height: 40px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    /* Sidebar */
+    .sidebar {
+      width: 320px;
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: var(--shadow);
+      height: fit-content;
+      position: sticky;
+      top: 30px;
+      border: 1px solid var(--border);
+    }
+    
+    .profile-header {
+      margin-bottom: 28px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .avatar {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    
+    .avatar i {
+      font-size: 32px;
+      color: white;
+    }
+    
+    .user-info h2 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--dark);
+      margin-bottom: 8px;
+      letter-spacing: -0.3px;
+    }
+    
+    .user-info p {
+      color: var(--secondary);
+      font-size: 0.9rem;
+      margin-bottom: 4px;
+    }
+    
+    .stats {
+      margin: 28px 0;
+      padding: 24px 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .stat-item {
+      text-align: center;
+    }
+    
+    .stat-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--primary);
+      line-height: 1;
+    }
+    
+    .stat-label {
+      font-size: 0.85rem;
+      color: var(--secondary);
+      margin-top: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 500;
+    }
+    
+    .logout-btn {
+      width: 100%;
+      padding: 12px;
+      background: var(--card-bg);
+      color: var(--error);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: all 0.2s ease;
+    }
+    
+    .logout-btn:hover {
+      background: #fee2e2;
+      border-color: var(--error);
+    }
+    
+    /* Events Section */
+    .events-section {
+      flex: 1;
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 32px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+    }
+    
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 32px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .section-header h3 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--dark);
+    }
+    
+    .events-count {
+      background: var(--light);
+      color: var(--primary);
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      border: 1px solid var(--border);
+    }
+    
+    .events-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 24px;
+    }
+    
+    .event-card {
+      background: var(--card-bg);
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: var(--shadow);
+      transition: all 0.2s ease;
+      border: 1px solid var(--border);
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+    
+    .event-card:hover {
+      box-shadow: var(--shadow-lg);
+      transform: translateY(-2px);
+      border-color: var(--primary);
+    }
+    
+    .event-card.joined {
+      border-color: var(--success);
+      background: linear-gradient(to right, rgba(16, 185, 129, 0.02), transparent);
+    }
+    
+    .event-card.processing {
+      opacity: 0.7;
+      pointer-events: none;
+      cursor: wait;
+    }
+    
+    .event-icon {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1.2rem;
+      flex-shrink: 0;
+    }
+    
+    .event-details {
+      flex: 1;
+      min-width: 0;
+    }
+    
+    .event-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 12px;
+    }
+    
+    .event-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--dark);
+      margin-bottom: 0;
+      line-height: 1.4;
+      flex: 1;
+    }
+    
+    .event-category-badge {
+      background: var(--light);
+      color: var(--primary);
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      border: 1px solid var(--border);
+      flex-shrink: 0;
+      margin-left: 8px;
+    }
+    
+    .event-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 16px;
+    }
+    
+    .event-status {
+      color: var(--success);
+      font-weight: 600;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    
+    .event-btn {
+      padding: 8px 20px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      background: var(--card-bg);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 110px;
+      justify-content: center;
+    }
+    
+    .event-btn:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+    
+    .event-btn.processing {
+      cursor: wait;
+    }
+    
+    .btn-join {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+    
+    .btn-join:hover:not(:disabled) {
+      background: var(--primary-dark);
+      border-color: var(--primary-dark);
+    }
+    
+    .btn-remove {
+      background: var(--card-bg);
+      color: var(--error);
+      border-color: var(--error);
+    }
+    
+    .btn-remove:hover:not(:disabled) {
+      background: #fee2e2;
+    }
+    
+    .btn-text, .btn-loader {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    
+    .btn-loader i {
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    /* Footer */
+    .footer {
+      text-align: center;
+      padding: 24px;
+      color: var(--secondary);
+      font-size: 0.85rem;
+      border-top: 1px solid var(--border);
+      margin-top: 40px;
+      background: var(--card-bg);
+    }
+    
+    .mobile-menu-btn {
+      display: none;
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1000;
+      background: var(--primary);
+      color: white;
+      width: 48px;
+      height: 48px;
+      border-radius: 10px;
+      border: none;
+      font-size: 1.2rem;
+      cursor: pointer;
+      box-shadow: var(--shadow-lg);
+    }
+    
+    /* Responsive */
+    @media (max-width: 1100px) {
+      .container {
+        flex-direction: column;
+        padding: 0 20px;
+      }
+      
+      .sidebar {
+        width: 100%;
+        position: static;
+        margin-bottom: 24px;
+      }
+      
+      .mobile-menu-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      
+      .header-content {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+      }
+      
+      .user-welcome {
+        align-self: flex-end;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .events-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .events-section,
+      .sidebar {
+        padding: 24px;
+      }
+      
+      .container {
+        padding: 0 16px;
+      }
+      
+      .header-content {
+        padding: 0 16px;
+      }
+      
+      .mobile-menu-btn {
+        top: 16px;
+        right: 16px;
+      }
+      
+      .event-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+      }
+      
+      .event-category-badge {
+        margin-left: 0;
+      }
+    }
+    
+    /* Loading State */
+    .loading {
+      opacity: 0.6;
+      pointer-events: none;
+    }
+    
+    .event-card.loading {
+      animation: pulse 1.5s infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { opacity: 0.6; }
+      50% { opacity: 0.8; }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="header-content">
+      <div>
+        <h1 class="fest-title">Srishti-2k26</h1>
+        <p class="fest-subtitle">Annual Cultural Festival Dashboard</p>
+      </div>
+      <div class="user-welcome">
+        <div class="user-avatar">
+          <i class="fas fa-user"></i>
+        </div>
+        <span>Welcome back</span>
+      </div>
+    </div>
+  </header>
+  
+  <!-- Mobile Menu Button -->
+  <button class="mobile-menu-btn" onclick="toggleMenu()">
+    <i class="fas fa-bars"></i>
+  </button>
+  
+  <div class="container">
+    <!-- Sidebar Profile -->
+    <div class="sidebar">
+      <div class="profile-header">
+        <div class="avatar">
+          <i class="fas fa-user-graduate"></i>
+        </div>
+        <div class="user-info">
+          <h2 id="name">Loading...</h2>
+          <p id="roll"></p>
+          <p id="dept"></p>
+        </div>
+      </div>
+      
+      <div class="stats">
+        <div class="stat-item">
+          <div class="stat-value" id="joinedCount">0</div>
+          <div class="stat-label">Programs Registered</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value">–</div>
+          <div class="stat-label">Schedule</div>
+        </div>
+      </div>
+      
+      <button class="logout-btn" onclick="logout()">
+        <i class="fas fa-sign-out-alt"></i> Logout
+      </button>
+    </div>
+    
+    <!-- Events Section -->
+    <div class="events-section">
+      <div class="section-header">
+        <h3>Available Programs</h3>
+        <div class="events-count" id="totalEvents">Loading...</div>
+      </div>
+      
+      <div class="events-grid" id="events">
+        <!-- Events will be loaded here -->
+        <div class="event-card loading">
+          <div class="event-icon">
+            <i class="fas fa-spinner fa-spin"></i>
+          </div>
+          <div class="event-details">
+            <div class="event-header">
+              <h4 class="event-title">Loading Programs</h4>
+            </div>
+            <div class="event-actions">
+              <span class="event-status"></span>
+              <button class="event-btn" disabled>
+                <span class="btn-text">Please wait</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <footer class="footer">
+    <p>© 2026 Srishti Cultural Festival. All rights reserved.</p>
+  </footer>
+</body>
+<script>
+(function () {
+    "use strict";
+
+    /* Disable Right Click */
+    document.addEventListener("contextmenu", function (e) {
+        e.preventDefault();
+    });
+
+    /* Disable Keyboard Shortcuts */
+    document.addEventListener("keydown", function (e) {
+
+        // F12
+        if (e.keyCode === 123) {
+            e.preventDefault();
+            return false;
+        }
+
+        // Ctrl+Shift+I/J/C
+        if (e.ctrlKey && e.shiftKey && 
+           (e.keyCode === 73 || e.keyCode === 74 || e.keyCode === 67)) {
+            e.preventDefault();
+            return false;
+        }
+
+        // Ctrl+U (View Source)
+        if (e.ctrlKey && e.keyCode === 85) {
+            e.preventDefault();
+            return false;
+        }
+
+        // Ctrl+S (Save)
+        if (e.ctrlKey && e.keyCode === 83) {
+            e.preventDefault();
+            return false;
+        }
+
+        // Ctrl+P (Print)
+        if (e.ctrlKey && e.keyCode === 80) {
+            e.preventDefault();
+            return false;
+        }
+    });
+
+    /* Disable Text Selection */
+    document.addEventListener("selectstart", function (e) {
+        e.preventDefault();
+    });
+
+    /* Disable Dragging */
+    document.addEventListener("dragstart", function (e) {
+        e.preventDefault();
+    });
+
+    /* DevTools Detection (Size-based) */
+    setInterval(function () {
+        const threshold = 160;
+        if (
+            window.outerWidth - window.innerWidth > threshold ||
+            window.outerHeight - window.innerHeight > threshold
+        ) {
+            document.body.innerHTML = "<h1 style='text-align:center;margin-top:20%;'>⚠️ Developer Tools Detected</h1>";
+            window.location.reload();
+        }
+    }, 1000);
+
+    /* Console Warning */
+    setTimeout(function () {
+        console.clear();
+        console.log("%cSTOP!", "color:red;font-size:40px;font-weight:bold;");
+        console.log("%cThis site is protected.", "font-size:18px;");
+    }, 1000);
+
+})();
+</script>
+
+</html>

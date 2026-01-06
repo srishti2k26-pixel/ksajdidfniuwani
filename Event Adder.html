@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Dashboard - Srishti Events</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+    import { getFirestore, collection, addDoc, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBUoNm0UQOSKm0_s8k_uarYYn5nnbvASs8",
+      authDomain: "srishtiwebapp.firebaseapp.com",
+      projectId: "srishtiwebapp",
+      storageBucket: "srishtiwebapp.firebasestorage.app",
+      messagingSenderId: "662576698314",
+      appId: "1:662576698314:web:f9c85e13fc20bf5d283533",
+      measurementId: "G-9WGLWDQ59S"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    window.addEvent = async function () {
+      const title = document.getElementById("title").value;
+      const description = document.getElementById("description").value;
+      const date = document.getElementById("date").value;
+      const location = document.getElementById("location").value;
+
+      if (!title || !date) {
+        alert("Title and Date are required");
+        return;
+      }
+
+      try {
+        await addDoc(collection(db, "events"), {
+          title,
+          description,
+          date,
+          location,
+          createdAt: serverTimestamp()
+        });
+
+        alert("Event added successfully!");
+        document.getElementById("eventForm").reset();
+        loadEvents();
+      } catch (e) {
+        alert("Error adding event");
+        console.error(e);
+      }
+    };
+
+    window.loadEvents = async function () {
+      const list = document.getElementById("eventList");
+      list.innerHTML = "";
+
+      const snapshot = await getDocs(collection(db, "events"));
+      snapshot.forEach(doc => {
+        const event = doc.data();
+        list.innerHTML += `
+          <li>
+            <strong>${event.title}</strong><br>
+            ${event.date} | ${event.location || "N/A"}
+          </li>
+        `;
+      });
+    };
+
+    window.onload = loadEvents;
+  </script>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      padding: 20px;
+    }
+    .container {
+      max-width: 500px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+    }
+    input, textarea, button {
+      width: 100%;
+      margin-top: 10px;
+      padding: 10px;
+    }
+    button {
+      background: #007bff;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    ul {
+      margin-top: 20px;
+      padding-left: 15px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h2>Admin Dashboard – Add Events</h2>
+
+    <form id="eventForm" onsubmit="event.preventDefault(); addEvent();">
+      <input type="text" id="title" placeholder="Event Title" required>
+      <textarea id="description" placeholder="Event Description"></textarea>
+      <input type="date" id="date" required>
+      <input type="text" id="location" placeholder="Location">
+      <button type="submit">Add Event</button>
+    </form>
+
+    <h3>Existing Events</h3>
+    <ul id="eventList"></ul>
+  </div>
+</body>
+</html>
