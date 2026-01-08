@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -521,12 +522,29 @@
         .Rishabh {
   font-weight: bold;
   font-size: 1.2em;
-  background: linear-gradient(270deg,rgb(251, 248, 248), rgb(255, 166, 0), rgb(238, 238, 68), green, indigo, rgb(252, 252, 252), rgb(203, 87, 87));
+  background: linear-gradient(
+    270deg,
+    rgb(251, 248, 248),
+    rgb(255, 166, 0),
+    rgb(238, 238, 68),
+    green,
+    indigo,
+    rgb(252, 252, 252),
+    rgb(203, 87, 87)
+  );
   background-size: 1400% 1400%;
+  
+  /* Standard property */
+  background-clip: text;
+  /* WebKit prefix for Safari/older Chrome */
   -webkit-background-clip: text;
+  
+  /* For transparent text color */
   -webkit-text-fill-color: transparent;
+  
   animation: rainbow 4s ease infinite;
 }
+
 
 @keyframes rainbow {
   0% {background-position:0% 50%;}
