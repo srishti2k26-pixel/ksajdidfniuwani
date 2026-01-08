@@ -535,95 +535,7 @@
 }
     </style>
    
-
-<style>
-    /* Sponsors Section Styles */
-    .sponsor-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 2rem;
-        justify-items: center;
-    }
     
-    .sponsor-card {
-        background: white;
-        border-radius: 10px;
-        padding: 1.5rem;
-        text-align: center;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-        transition: all 0.3s ease;
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-    }
-    
-    .sponsor-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-    }
-    
-    .sponsor-link {
-        text-decoration: none;
-        color: var(--dark);
-        display: flex;
-        flex-direction: column;
-        height: 100%;
-        justify-content: space-between;
-    }
-    
-    .sponsor-logo {
-        margin-bottom: 1rem;
-    }
-    
-    .sponsor-logo h4 {
-        margin-top: 1rem;
-        color: var(--primary);
-        font-size: 1.2rem;
-    }
-    
-    .sponsor-desc {
-        color: var(--info);
-        font-weight: 500;
-        margin-bottom: 1rem;
-        flex-grow: 1;
-    }
-    
-    .sponsor-contact {
-        background: var(--light);
-        padding: 0.5rem;
-        border-radius: 5px;
-        margin-top: auto;
-    }
-    
-    .sponsor-contact small {
-        color: var(--primary);
-        font-weight: 500;
-    }
-    
-    .platinum .sponsor-card {
-        border-top: 4px solid #E5E4E2;
-    }
-    
-    .gold .sponsor-card {
-        border-top: 4px solid #FFD700;
-    }
-    
-    .sponsor-banner:hover {
-        transform: scale(1.01);
-        transition: transform 0.3s ease;
-    }
-    
-    @media (max-width: 768px) {
-        .sponsor-grid {
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        }
-        
-        .sponsor-banner div {
-            flex-direction: column;
-            text-align: center;
-        }
-    }
-</style>
 </head>
 <body>
     <!-- Header -->
@@ -962,9 +874,6 @@
         </div>
     </div>
 </section>
-
-
-
 <style>
     /* Marquee Styles */
     .marquee-container {
@@ -1289,12 +1198,100 @@
                         </div>
                         <p class="sponsor-desc">Art Supplies Partner</p>
                         <div class="sponsor-contact">
-                            <small><i class="fas fa-phone"></i> Call for Supplies</small>
+                            <!-- <small><i class="fas fa-phone"></i> Call for Supplies</small> -->
                         </div>
                     </a>
                 </div>
             </div>
         </div>
+        <style>
+        /* Sponsors Section Styles */
+    .sponsor-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 2rem;
+        justify-items: center;
+    }
+    
+    .sponsor-card {
+        background: white;
+        border-radius: 10px;
+        padding: 1.5rem;
+        text-align: center;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .sponsor-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    }
+    
+    .sponsor-link {
+        text-decoration: none;
+        color: var(--dark);
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        justify-content: space-between;
+    }
+    
+    .sponsor-logo {
+        margin-bottom: 1rem;
+    }
+    
+    .sponsor-logo h4 {
+        margin-top: 1rem;
+        color: var(--primary);
+        font-size: 1.2rem;
+    }
+    
+    .sponsor-desc {
+        color: var(--info);
+        font-weight: 500;
+        margin-bottom: 1rem;
+        flex-grow: 1;
+    }
+    
+    .sponsor-contact {
+        background: var(--light);
+        padding: 0.5rem;
+        border-radius: 5px;
+        margin-top: auto;
+    }
+    
+    .sponsor-contact small {
+        color: var(--primary);
+        font-weight: 500;
+    }
+    
+    .platinum .sponsor-card {
+        border-top: 4px solid #E5E4E2;
+    }
+    
+    .gold .sponsor-card {
+        border-top: 4px solid #FFD700;
+    }
+    
+    .sponsor-banner:hover {
+        transform: scale(1.01);
+        transition: transform 0.3s ease;
+    }
+    
+    @media (max-width: 768px) {
+        .sponsor-grid {
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        }
+        
+        .sponsor-banner div {
+            flex-direction: column;
+            text-align: center;
+        }
+    }
+</style>
         
         
 
