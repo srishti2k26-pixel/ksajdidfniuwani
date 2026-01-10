@@ -62,42 +62,58 @@
     }
 
     async function loadEvents() {
-      const container = document.getElementById("events");
-      container.innerHTML = "";
+  const container = document.getElementById("events");
+  container.innerHTML = "";
 
-      const snapshot = await getDocs(collection(db, "events"));
-      const eventsCount = snapshot.size;
-      document.getElementById("totalEvents").innerText = `${eventsCount} Programs`;
-      
-      snapshot.forEach(d => {
-        const e = d.data();
-        const joined = selectedEvents.includes(e.title);
+  const snapshot = await getDocs(collection(db, "events"));
+  const eventsCount = snapshot.size;
+  document.getElementById("totalEvents").innerText = `${eventsCount} Programs`;
 
-        container.innerHTML += `
-          <div class="event-card ${joined ? "joined" : ""}" id="event-${e.title.replace(/\s+/g, '-').replace(/[^\w-]/g, '').toLowerCase()}">
-            <div class="event-icon">
-              <i class="fas ${getEventIcon(e.category)}"></i>
-            </div>
-            <div class="event-details">
-              <div class="event-header">
-                <h4 class="event-title">${e.title}</h4>
-                ${e.category ? `<span class="event-category-badge">${e.category}</span>` : ''}
-              </div>
-              <div class="event-actions">
-                <span class="event-status">${joined ? '<i class="fas fa-check-circle"></i> Registered' : ''}</span>
-                <button class="event-btn ${joined ? 'btn-remove' : 'btn-join'}" 
-        onclick="toggleEvent('${e.title.replace(/'/g, "\\'")}', ${joined}, this)">
-                  <span class="btn-text">${joined ? 'Unregister' : 'Register'}</span>
-                  <span class="btn-loader" style="display: none;">
-                    <i class="fas fa-spinner fa-spin"></i> Processing
-                  </span>
-                </button>
-              </div>
-            </div>
+  // 👉 Step 1: Put all events in array
+  let eventsArr = [];
+  snapshot.forEach(d => eventsArr.push(d.data()));
+
+  // 👉 Step 2: Sort: Registered first, then A–Z
+  eventsArr.sort((a, b) => {
+    const aJoined = selectedEvents.includes(a.title);
+    const bJoined = selectedEvents.includes(b.title);
+
+    if (aJoined !== bJoined) return bJoined - aJoined; // joined first
+    return a.title.localeCompare(b.title); // alphabetical
+  });
+
+  // 👉 Step 3: Render
+  eventsArr.forEach(e => {
+    const joined = selectedEvents.includes(e.title);
+
+    container.innerHTML += `
+      <div class="event-card ${joined ? "joined" : ""}" id="event-${e.title.replace(/\s+/g, '-').replace(/[^\w-]/g, '').toLowerCase()}">
+        <div class="event-icon">
+          <i class="fas ${getEventIcon(e.category)}"></i>
+        </div>
+        <div class="event-details">
+          <div class="event-header">
+            <h4 class="event-title">${e.title}</h4>
+            ${e.category ? `<span class="event-category-badge">${e.category}</span>` : ''}
           </div>
-        `;
-      });
-    }
+          <div class="event-actions">
+            <span class="event-status">
+              ${joined ? '<i class="fas fa-check-circle"></i> Registered' : ''}
+            </span>
+            <button class="event-btn ${joined ? 'btn-remove' : 'btn-join'}"
+              onclick="toggleEvent('${e.title.replace(/'/g, "\\'")}', ${joined}, this)">
+              <span class="btn-text">${joined ? 'Unregister' : 'Register'}</span>
+              <span class="btn-loader" style="display: none;">
+                <i class="fas fa-spinner fa-spin"></i> Processing
+              </span>
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+  });
+}
+
 
     function getEventIcon(category) {
       const icons = {
