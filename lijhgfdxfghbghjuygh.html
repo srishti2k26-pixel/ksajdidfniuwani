@@ -33,6 +33,8 @@
 
     let uid;
     let selectedEvents = [];
+    let allEvents = [];   // 🔥 cache events
+
     
 
     onAuthStateChanged(auth, async (user) => {
@@ -65,25 +67,25 @@
   const container = document.getElementById("events");
   container.innerHTML = "";
 
-  const snapshot = await getDocs(collection(db, "events"));
-  const eventsCount = snapshot.size;
-  document.getElementById("totalEvents").innerText = `${eventsCount} Programs`;
+  // 🔥 Fetch only once
+  if (allEvents.length === 0) {
+    const snapshot = await getDocs(collection(db, "events"));
+    allEvents = snapshot.docs.map(d => d.data());
+    document.getElementById("totalEvents").innerText =
+      `${allEvents.length} Programs`;
+  }
 
-  // 👉 Step 1: Put all events in array
-  let eventsArr = [];
-  snapshot.forEach(d => eventsArr.push(d.data()));
-
-  // 👉 Step 2: Sort: Registered first, then A–Z
-  eventsArr.sort((a, b) => {
+  // 👉 Sort: Registered first, then A–Z
+  const sorted = [...allEvents].sort((a, b) => {
     const aJoined = selectedEvents.includes(a.title);
     const bJoined = selectedEvents.includes(b.title);
 
-    if (aJoined !== bJoined) return bJoined - aJoined; // joined first
-    return a.title.localeCompare(b.title); // alphabetical
+    if (aJoined !== bJoined) return bJoined - aJoined;
+    return a.title.localeCompare(b.title);
   });
 
-  // 👉 Step 3: Render
-  eventsArr.forEach(e => {
+  // 👉 Render
+  sorted.forEach(e => {
     const joined = selectedEvents.includes(e.title);
 
     container.innerHTML += `
@@ -113,6 +115,7 @@
     `;
   });
 }
+
 
 
     function getEventIcon(category) {
@@ -150,13 +153,21 @@
     const ref = doc(db, "users", uid);
 
     if (joined) {
-      await updateDoc(ref, { selectedEvents: arrayRemove(event) });
-    } else {
-      await updateDoc(ref, { selectedEvents: arrayUnion(event) });
-    }
+  await updateDoc(ref, { selectedEvents: arrayRemove(event) });
+  selectedEvents = selectedEvents.filter(e => e !== event); // 🔥 local update
+} else {
+  await updateDoc(ref, { selectedEvents: arrayUnion(event) });
+  selectedEvents.push(event); // 🔥 local update
+}
 
-    await loadUser();
-    await loadEvents();
+// 🔥 update counter
+document.getElementById("joinedCount").innerText = selectedEvents.length;
+
+// 🔥 re-render using cached events
+loadEvents();
+
+
+    
   } catch (error) {
     console.error("Error toggling event:", error);
     // Re-enable THIS button on error
