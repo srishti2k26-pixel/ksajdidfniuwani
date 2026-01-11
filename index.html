@@ -4,18 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Srishti-2k26 | Cultural Fest</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
     <style>
         :root {
-            --primary: #6a11cb;
-            --secondary: #2575fc;
-            --accent: #ff4d4d;
+            --primary: #8a2be2;
+            --secondary: #00b4d8;
+            --accent: #ff006e;
             --light: #f8f9fa;
-            --dark: #343a40;
-            --success: #28a745;
-            --warning: #ffc107;
-            --info: #17a2b8;
+            --dark: #1a1a2e;
+            --success: #38b000;
+            --warning: #ff9e00;
+            --info: #00bbf9;
+            --gradient: linear-gradient(135deg, var(--primary), var(--secondary));
+            --gradient-reverse: linear-gradient(135deg, var(--secondary), var(--primary));
         }
         
         * {
@@ -25,30 +28,36 @@
             font-family: 'Poppins', sans-serif;
         }
         
+        html {
+            scroll-behavior: smooth;
+        }
+        
         body {
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            min-height: 100vh;
+            background-color: #f0f2f5;
             color: var(--dark);
             line-height: 1.6;
+            overflow-x: hidden;
         }
         
         .container {
             width: 100%;
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             padding: 0 20px;
         }
         
         /* Header Styles */
         header {
-            background: linear-gradient(to right, var(--primary), var(--secondary));
+            background: rgba(26, 26, 46, 0.95);
+            backdrop-filter: blur(10px);
             color: white;
             padding: 1rem 0;
             position: fixed;
             width: 100%;
             top: 0;
             z-index: 1000;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+            border-bottom: 2px solid var(--accent);
         }
         
         .header-container {
@@ -58,24 +67,34 @@
         }
         
         .logo {
-            font-size: 1.8rem;
-            font-weight: 700;
             display: flex;
             align-items: center;
+            gap: 12px;
+            font-size: 1.8rem;
+            font-weight: 800;
         }
         
-        .logo i {
-            margin-right: 10px;
-            color: var(--accent);
+        .logo-img {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+            border-radius: 50%;
+            border: 2px solid var(--accent);
+            padding: 3px;
+            box-shadow: 0 0 15px rgba(255, 0, 110, 0.5);
+        }
+        
+        .logo-text {
+            background: linear-gradient(to right, var(--accent), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 900;
         }
         
         nav ul {
             display: flex;
             list-style: none;
-        }
-        
-        nav ul li {
-            margin-left: 1.5rem;
+            gap: 1.8rem;
         }
         
         nav ul li a {
@@ -85,10 +104,23 @@
             transition: all 0.3s ease;
             padding: 0.5rem 1rem;
             border-radius: 4px;
+            position: relative;
+            overflow: hidden;
         }
         
-        nav ul li a:hover {
-            background-color: rgba(255, 255, 255, 0.2);
+        nav ul li a::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent);
+            transition: width 0.3s ease;
+        }
+        
+        nav ul li a:hover::before {
+            width: 100%;
         }
         
         .mobile-menu-btn {
@@ -106,42 +138,73 @@
             display: flex;
             align-items: center;
             padding-top: 80px;
-            background: url('https://images.unsplash.com/photo-1492684223066-81342ee5ff30?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80') no-repeat center center/cover;
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), 
+                        url('https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80') no-repeat center center/cover;
             position: relative;
+            overflow: hidden;
         }
         
-        .hero::before {
+        .hero::after {
             content: '';
             position: absolute;
-            top: 0;
+            bottom: 0;
             left: 0;
             width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.6);
+            height: 100px;
+            background: linear-gradient(to top, #f0f2f5, transparent);
+            z-index: 1;
         }
         
         .hero-content {
             position: relative;
-            z-index: 1;
+            z-index: 2;
             color: white;
-            max-width: 600px;
+            max-width: 800px;
         }
         
         .hero h1 {
-            font-size: 3.5rem;
+            font-size: 4rem;
             margin-bottom: 1rem;
-            line-height: 1.2;
+            line-height: 1.1;
+            text-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .hero h1 .highlight {
+            color: var(--accent);
+            position: relative;
+            display: inline-block;
+        }
+        
+        .hero h1 .highlight::after {
+            content: '';
+            position: absolute;
+            bottom: 5px;
+            left: 0;
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 0, 110, 0.3);
+            z-index: -1;
         }
         
         .hero p {
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+        
+        .btn-group {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
         }
         
         .btn {
-            display: inline-block;
-            padding: 0.8rem 1.8rem;
-            background: var(--accent);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 1rem 2.5rem;
+            background: var(--gradient);
             color: white;
             border: none;
             border-radius: 50px;
@@ -149,18 +212,35 @@
             text-decoration: none;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+        
+        .btn:hover::before {
+            left: 100%;
         }
         
         .btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
         }
         
         .btn-outline {
             background: transparent;
             border: 2px solid white;
-            margin-left: 1rem;
+            color: white;
         }
         
         .btn-outline:hover {
@@ -168,64 +248,155 @@
             color: var(--primary);
         }
         
+        .btn-accent {
+            background: var(--accent);
+        }
+        
         /* About Section */
         .section {
-            padding: 5rem 0;
+            padding: 6rem 0;
         }
         
         .section-title {
             text-align: center;
-            margin-bottom: 3rem;
-            font-size: 2.5rem;
-            color: var(--primary);
+            margin-bottom: 4rem;
+            position: relative;
+        }
+        
+        .section-title h2 {
+            font-size: 3rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: inline-block;
+            position: relative;
+            padding-bottom: 15px;
+        }
+        
+        .section-title h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: var(--gradient);
+            border-radius: 2px;
         }
         
         .about-content {
-            display: flex;
-            flex-wrap: wrap;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
             align-items: center;
-            gap: 2rem;
         }
         
         .about-text {
-            flex: 1;
-            min-width: 300px;
+            padding-right: 2rem;
+        }
+        
+        .about-text p {
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+        
+        .highlight-box {
+            background: var(--gradient);
+            color: white;
+            padding: 2rem;
+            border-radius: 10px;
+            margin-top: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .highlight-box h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
         
         .about-image {
-            flex: 1;
-            min-width: 300px;
+            position: relative;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+        
+        .about-image::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--gradient);
+            opacity: 0.2;
+            z-index: 1;
         }
         
         .about-image img {
             width: 100%;
-            border-radius: 10px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            height: 500px;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .about-image:hover img {
+            transform: scale(1.05);
         }
         
         /* Events Section */
         .events-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 2rem;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2.5rem;
         }
         
         .event-card {
             background: white;
-            border-radius: 10px;
+            border-radius: 15px;
             overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.4s ease;
+            position: relative;
         }
         
         .event-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+            transform: translateY(-15px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+        }
+        
+        .event-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: var(--accent);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            z-index: 2;
         }
         
         .event-image {
-            height: 200px;
+            height: 220px;
             overflow: hidden;
+            position: relative;
+        }
+        
+        .event-image::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 50%;
+            background: linear-gradient(to top, rgba(0,0,0,0.5), transparent);
         }
         
         .event-image img {
@@ -240,159 +411,258 @@
         }
         
         .event-info {
-            padding: 1.5rem;
+            padding: 2rem;
         }
         
         .event-info h3 {
             margin-bottom: 0.5rem;
             color: var(--primary);
+            font-size: 1.5rem;
         }
         
-        .event-info .date {
+        .event-meta {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .event-meta span {
             display: flex;
             align-items: center;
-            color: var(--info);
-            margin-bottom: 0.5rem;
+            gap: 5px;
         }
         
-        .event-info .date i {
-            margin-right: 0.5rem;
+        .event-meta i {
+            color: var(--accent);
         }
         
-        .event-info .location {
-            display: flex;
-            align-items: center;
-            color: var(--warning);
-            margin-bottom: 1rem;
+        /* Sponsors Marquee */
+        #sponsors-marquee {
+            background: var(--dark);
+            position: relative;
+            overflow: hidden;
+            padding: 5rem 0;
         }
         
-        .event-info .location i {
-            margin-right: 0.5rem;
-        }
-        
-        /* Login Modal */
-        .modal {
-            display: none;
-            position: fixed;
+        #sponsors-marquee::before {
+            content: '';
+            position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
-            z-index: 2000;
-            justify-content: center;
-            align-items: center;
+            background: url('https://images.unsplash.com/photo-1558618666-fcd25c85cd64?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=20') center/cover;
+            opacity: 0.1;
         }
         
-        .modal-content {
-            background: white;
-            padding: 2rem;
-            border-radius: 10px;
-            width: 90%;
-            max-width: 400px;
+        .sponsor-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .sponsor-header h2 {
+            color: white;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .sponsor-header p {
+            color: rgba(255, 255, 255, 0.8);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .marquee-container {
             position: relative;
-            animation: modalOpen 0.4s ease;
-        }
-        
-        @keyframes modalOpen {
-            from {
-                opacity: 0;
-                transform: translateY(-50px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        .close-modal {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: var(--dark);
-        }
-        
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-        
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-        }
-        
-        .form-group input {
             width: 100%;
-            padding: 0.8rem;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 1rem;
+            overflow: hidden;
+            margin: 3rem 0;
         }
         
-        .form-actions {
+        .marquee-track {
             display: flex;
-            justify-content: space-between;
+            width: fit-content;
+            animation: marqueeScroll 40s linear infinite;
+        }
+        
+        .marquee-reverse {
+            animation: marqueeScrollReverse 45s linear infinite;
+            margin-top: 2rem;
+        }
+        
+        @keyframes marqueeScroll {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(-50%);
+            }
+        }
+        
+        @keyframes marqueeScrollReverse {
+            0% {
+                transform: translateX(-50%);
+            }
+            100% {
+                transform: translateX(0);
+            }
+        }
+        
+        .marquee-content {
+            display: flex;
+            gap: 2rem;
+            padding: 0 1rem;
+        }
+        
+        .sponsor-item {
+            display: flex;
+            flex-direction: column;
             align-items: center;
-        }
-        
-        .form-actions a {
-            color: var(--primary);
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 2rem;
+            min-width: 200px;
+            height: 200px;
             text-decoration: none;
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .sponsor-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            border-color: var(--accent);
+        }
+        
+        .sponsor-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: white;
+        }
+        
+        .sponsor-name {
+            font-weight: 600;
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+        
+        .sponsor-tag {
             font-size: 0.9rem;
+            opacity: 0.9;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+            margin-top: 0.5rem;
         }
         
-        .form-actions a:hover {
-            text-decoration: underline;
+        /* Static Sponsors Section */
+        .sponsor-tier {
+            margin-bottom: 4rem;
         }
         
-        .login-tabs {
+        .tier-title {
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 1.8rem;
+        }
+        
+        .tier-title.platinum {
+            color: #E5E4E2;
+        }
+        
+        .tier-title.gold {
+            color: #FFD700;
+        }
+        
+        .sponsor-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+        
+        .sponsor-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            height: 100%;
             display: flex;
-            margin-bottom: 1.5rem;
-            border-bottom: 1px solid #ddd;
+            flex-direction: column;
+            border-top: 5px solid;
         }
         
-        .login-tab {
-            padding: 0.5rem 1rem;
-            cursor: pointer;
-            font-weight: 500;
+        .sponsor-card.platinum {
+            border-top-color: #E5E4E2;
+        }
+        
+        .sponsor-card.gold {
+            border-top-color: #FFD700;
+        }
+        
+        .sponsor-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+        
+        .sponsor-logo {
+            margin-bottom: 1.5rem;
+        }
+        
+        .sponsor-logo i {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .sponsor-logo h4 {
+            font-size: 1.4rem;
             color: var(--dark);
         }
         
-        .login-tab.active {
-            color: var(--primary);
-            border-bottom: 2px solid var(--primary);
+        .sponsor-desc {
+            color: #666;
+            margin-bottom: 1.5rem;
+            flex-grow: 1;
         }
         
-        .tab-content {
-            display: none;
-        }
-        
-        .tab-content.active {
-            display: block;
+        .sponsor-contact {
+            background: var(--light);
+            padding: 0.8rem;
+            border-radius: 10px;
+            margin-top: auto;
         }
         
         /* Footer */
         footer {
-            background: linear-gradient(to right, var(--primary), var(--secondary));
+            background: var(--dark);
             color: white;
-            padding: 3rem 0 1rem;
+            padding: 5rem 0 2rem;
+            position: relative;
         }
         
         .footer-content {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-            margin-bottom: 2rem;
+            gap: 3rem;
+            margin-bottom: 3rem;
         }
         
         .footer-column h3 {
-            font-size: 1.2rem;
+            font-size: 1.5rem;
             margin-bottom: 1.5rem;
             position: relative;
-            padding-bottom: 0.5rem;
+            padding-bottom: 10px;
+            color: white;
         }
         
         .footer-column h3::after {
@@ -401,8 +671,13 @@
             left: 0;
             bottom: 0;
             width: 50px;
-            height: 2px;
+            height: 3px;
             background: var(--accent);
+        }
+        
+        .footer-column p {
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 1.5rem;
         }
         
         .footer-column ul {
@@ -410,11 +685,19 @@
         }
         
         .footer-column ul li {
-            margin-bottom: 0.8rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .footer-column ul li i {
+            color: var(--accent);
+            width: 20px;
         }
         
         .footer-column ul li a {
-            color: rgba(255, 255, 255, 0.8);
+            color: rgba(255, 255, 255, 0.7);
             text-decoration: none;
             transition: all 0.3s ease;
         }
@@ -427,32 +710,106 @@
         .social-links {
             display: flex;
             gap: 1rem;
+            margin-top: 1.5rem;
         }
         
         .social-links a {
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 40px;
-            height: 40px;
+            width: 45px;
+            height: 45px;
             background: rgba(255, 255, 255, 0.1);
             border-radius: 50%;
             color: white;
             transition: all 0.3s ease;
+            text-decoration: none;
         }
         
         .social-links a:hover {
             background: var(--accent);
-            transform: translateY(-3px);
+            transform: translateY(-5px);
         }
         
         .footer-bottom {
             text-align: center;
-            padding-top: 1.5rem;
+            padding-top: 2rem;
             border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        .developer-credit {
+            margin-top: 1rem;
+            font-size: 0.9rem;
+        }
+        
+        .Rishabh {
+            background: linear-gradient(90deg, #ff006e, #00b4d8, #ff9e00, #38b000);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 700;
+        }
+        
+        /* Countdown Timer */
+        .countdown {
+            background: var(--gradient);
+            padding: 3rem 0;
+            text-align: center;
+            color: white;
+            margin: 4rem 0;
+            border-radius: 15px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .countdown h3 {
+            font-size: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .countdown-timer {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .timer-unit {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1.5rem;
+            border-radius: 10px;
+            min-width: 120px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .timer-value {
+            font-size: 3rem;
+            font-weight: 700;
+            line-height: 1;
+        }
+        
+        .timer-label {
+            font-size: 1rem;
+            opacity: 0.9;
+            margin-top: 0.5rem;
         }
         
         /* Responsive Styles */
+        @media (max-width: 1024px) {
+            .hero h1 {
+                font-size: 3.2rem;
+            }
+            
+            .about-content {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+            
+            .about-text {
+                padding-right: 0;
+            }
+        }
+        
         @media (max-width: 768px) {
             .header-container {
                 padding: 0 1rem;
@@ -462,11 +819,15 @@
                 position: fixed;
                 top: 70px;
                 left: -100%;
-                width: 80%;
+                width: 100%;
                 height: calc(100vh - 70px);
-                background: linear-gradient(to right, var(--primary), var(--secondary));
-                transition: all 0.3s ease;
+                background: rgba(26, 26, 46, 0.98);
+                backdrop-filter: blur(10px);
+                transition: all 0.4s ease;
                 z-index: 999;
+                display: flex;
+                align-items: center;
+                justify-content: center;
             }
             
             nav.active {
@@ -475,11 +836,8 @@
             
             nav ul {
                 flex-direction: column;
-                padding: 2rem;
-            }
-            
-            nav ul li {
-                margin: 1rem 0;
+                align-items: center;
+                gap: 2rem;
             }
             
             .mobile-menu-btn {
@@ -491,15 +849,37 @@
             }
             
             .hero p {
-                font-size: 1rem;
+                font-size: 1.1rem;
             }
             
             .btn {
-                padding: 0.6rem 1.4rem;
+                padding: 0.8rem 1.8rem;
             }
             
-            .section-title {
-                font-size: 2rem;
+            .btn-group {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .section-title h2 {
+                font-size: 2.2rem;
+            }
+            
+            .events-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .countdown-timer {
+                gap: 1rem;
+            }
+            
+            .timer-unit {
+                min-width: 90px;
+                padding: 1rem;
+            }
+            
+            .timer-value {
+                font-size: 2.2rem;
             }
         }
         
@@ -508,65 +888,89 @@
                 font-size: 2rem;
             }
             
-            .btn-group {
-                display: flex;
-                flex-direction: column;
+            .hero p {
+                font-size: 1rem;
+            }
+            
+            .section-title h2 {
+                font-size: 1.8rem;
+            }
+            
+            .about-image img {
+                height: 350px;
+            }
+            
+            .sponsor-item {
+                min-width: 160px;
+                height: 160px;
+                padding: 1.5rem;
+            }
+            
+            .sponsor-icon {
+                font-size: 2.2rem;
+            }
+            
+            .marquee-content {
                 gap: 1rem;
             }
             
-            .btn-outline {
-                margin-left: 0;
+            .footer-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            
+            .footer-column h3::after {
+                left: 50%;
+                transform: translateX(-50%);
             }
         }
-        .Rishabh {
-  font-weight: bold;
-  font-size: 1.2em;
-  background: linear-gradient(
-    270deg,
-    rgb(251, 248, 248),
-    rgb(255, 166, 0),
-    rgb(238, 238, 68),
-    green,
-    indigo,
-    rgb(252, 252, 252),
-    rgb(203, 87, 87)
-  );
-  background-size: 1400% 1400%;
-  
-  /* Standard property */
-  background-clip: text;
-  /* WebKit prefix for Safari/older Chrome */
-  -webkit-background-clip: text;
-  
-  /* For transparent text color */
-  -webkit-text-fill-color: transparent;
-  
-  animation: rainbow 4s ease infinite;
-}
-
-
-@keyframes rainbow {
-  0% {background-position:0% 50%;}
-  50% {background-position:100% 50%;}
-  100% {background-position:0% 50%;}
-}
-.logo-img {
-    width: 40px;
-    height: 40px;
-    object-fit: contain;
-    margin-right: 10px;
-    border-radius: 37px;
-}
-    </style> 
+        
+        /* Animations */
+        .animate-fade-in {
+            animation: fadeIn 1s ease-out;
+        }
+        
+        .animate-slide-up {
+            animation: slideUp 0.8s ease-out;
+        }
+        
+        .animate-slide-left {
+            animation: slideLeft 0.8s ease-out;
+        }
+        
+        .animate-slide-right {
+            animation: slideRight 0.8s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        @keyframes slideLeft {
+            from { transform: translateX(50px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        @keyframes slideRight {
+            from { transform: translateX(-50px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+    </style>
 </head>
 <body>
     <!-- Header -->
-    <header>
+    <header class="animate-fade-in">
         <div class="container header-container">
             <div class="logo">
-    <img src="logo.webp" alt="Srishti Logo" class="logo-img">
-    <span>Srishti-2k26</span>
-    </div>
+                <img src="logo.webp" alt="Srishti Logo" class="logo-img">
+                <span class="logo-text">Srishti-2k26</span>
+            </div>
 
             <button class="mobile-menu-btn" id="mobileMenuBtn">
                 <i class="fas fa-bars"></i>
@@ -576,8 +980,8 @@
                     <li><a href="#home">Home</a></li>
                     <li><a href="#about">About</a></li>
                     <li><a href="#events">Events</a></li>
+                    <li><a href="#sponsors-marquee">Sponsors</a></li>
                     <li><a href="#contact">Contact</a></li>
-                    <li><a href="#sponsors">Sponsors</a></li>
                 </ul>
             </nav>
         </div>
@@ -586,740 +990,298 @@
     <!-- Hero Section -->
     <section class="hero" id="home">
         <div class="container">
-            <div class="hero-content">
-                <h1>Experience the Magic of Srishti-2k26</h1>
-                <p>The most awaited cultural fest of the year is here! Join us for four days of music, dance, art, and unforgettable memories.</p>
+            <div class="hero-content animate-slide-up">
+                <h1>Experience the Magic of <span class="highlight">Srishti-2k26</span></h1>
+                <p>The most awaited cultural fest of the year is here! Join us for four days of music, dance, art, and unforgettable memories at I.Ag.Sc BHU.</p>
                 <div class="btn-group">
-                    <a href="#events" class="btn">Explore Events</a>
-<a href="sjniusghcvbiasoijhjg.html" class="btn btn-outline">Register Now</a></div>
+                    <a href="#events" class="btn btn-accent">
+                        <i class="fas fa-calendar-alt"></i> Explore Events
+                    </a>
+                    <a href="sjniusghcvbiasoijhjg.html" class="btn btn-outline">
+                        <i class="fas fa-user-plus"></i> Register Now
+                    </a>
+                </div>
             </div>
         </div>
     </section>
 
+    <!-- Countdown Timer -->
+    <div class="container">
+        <div class="countdown animate-fade-in">
+            <h3>Festival Starts In</h3>
+            <div class="countdown-timer" id="countdown">
+                <div class="timer-unit">
+                    <div class="timer-value" id="days">00</div>
+                    <div class="timer-label">Days</div>
+                </div>
+                <div class="timer-unit">
+                    <div class="timer-value" id="hours">00</div>
+                    <div class="timer-label">Hours</div>
+                </div>
+                <div class="timer-unit">
+                    <div class="timer-value" id="minutes">00</div>
+                    <div class="timer-label">Minutes</div>
+                </div>
+                <div class="timer-unit">
+                    <div class="timer-value" id="seconds">00</div>
+                    <div class="timer-label">Seconds</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- About Section -->
     <section class="section" id="about">
         <div class="container">
-            <h2 class="section-title">About The Fest</h2>
+            <div class="section-title animate-fade-in">
+                <h2>About The Fest</h2>
+            </div>
             <div class="about-content">
-                <div class="about-text">
-                    <p>Srishti-2k26 is the annual cultural festival of our institution I.Ag.Sc BHU, bringing together talent from across the institute for four days of non-stop entertainment, competition, and celebration.</p>
-                    <p>With over 30 events spanning music, dance, drama, art, literature, and more, Srishti promises to be an unforgettable experience. Our theme this year is "Convergence of Cultures" celebrating the diversity that makes our world beautiful.</p>
-                    <p>Join us from Jan 31st-3rd Feb , 2026 at the Auditorium for an experience you'll cherish forever.</p>
+                <div class="about-text animate-slide-left">
+                    <p>Srishti-2k26 is the premier annual cultural festival of I.Ag.Sc BHU, bringing together the brightest talents from across the institute for four exhilarating days of entertainment, competition, and celebration.</p>
+                    <p>With over 30 events spanning music, dance, drama, art, literature, and more, Srishti promises to be an unforgettable experience. Our theme this year is <strong>"Convergence of Cultures"</strong> – a celebration of the beautiful diversity that enriches our world.</p>
+                    
+                    <div class="highlight-box">
+                        <h3><i class="fas fa-calendar-star"></i> Festival Dates</h3>
+                        <p>Join us from <strong>January 31st to February 3rd, 2026</strong> at the University Auditorium for an experience you'll cherish forever.</p>
+                    </div>
                 </div>
-                <div class="about-image">
+                <div class="about-image animate-slide-right">
                     <img src="institute.webp" alt="Cultural Fest">
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Animated Sponsors Marquee -->
-<section class="section" id="sponsors-marquee" style="background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%); color: white; padding: 4rem 0;">
-    <div class="container">
-        <h2 class="section-title" style="color: white; margin-bottom: 1rem;">Our Valued Sponsors</h2>
-        <p style="text-align: center; margin-bottom: 3rem; max-width: 600px; margin-left: auto; margin-right: auto; opacity: 0.9;">
-            Click on any sponsor logo to visit their website or contact them directly
-        </p>
-        
-        <!-- Marquee Container -->
-        <div class="marquee-container">
-            <!-- Marquee Track 1 (Left to Right) -->
-            <div class="marquee-track">
-                <div class="marquee-content">
-                    <!-- Sponsor 1 -->
-                    <a href="https://www.cocacola.com" target="_blank" class="sponsor-item">
-                        <div class="sponsor-icon">
-                            <i class="fas fa-wine-bottle"></i>
-                        </div>
-                        <span class="sponsor-name">Coca-Cola</span>
-                        <span class="sponsor-tag">Beverage Partner</span>
-                    </a>
-                    
-                    <!-- Sponsor 2 -->
-                    <a href="https://www.spotify.com" target="_blank" class="sponsor-item">
-                        <div class="sponsor-icon">
-                            <i class="fab fa-spotify"></i>
-                        </div>
-                        <span class="sponsor-name">Spotify</span>
-                        <span class="sponsor-tag">Music Partner</span>
-                    </a>
-                    
-                    <!-- Sponsor 3 -->
-                    <a href="tel:+18002223333" class="sponsor-item">
-                        <div class="sponsor-icon">
-                            <i class="fas fa-mobile-alt"></i>
-                        </div>
-                        <span class="sponsor-name">TechGiant</span>
-                        <span class="sponsor-tag">Call Now</span>
-                    </a>
-                    
-                    <!-- Sponsor 4 -->
-                    <a href="https://www.redbull.com" target="_blank" class="sponsor-item">
-                        <div class="sponsor-icon">
-                            <i class="fas fa-bolt"></i>
-                        </div>
-                        <span class="sponsor-name">Red Bull</span>
-                        <span class="sponsor-tag">Energy Partner</span>
-                    </a>
-                    
-                    <!-- Sponsor 5 -->
-                    <a href="https://www.nike.com" target="_blank" class="sponsor-item">
-                        <div class="sponsor-icon">
-                            <i class="fas fa-running"></i>
-                        </div>
-                        <span class="sponsor-name">Nike</span>
-                        <span class="sponsor-tag">Sports Partner</span>
-                    </a>
-                    
-                    <!-- Sponsor 6 -->
-                    <a href="https://goo.gl/maps/example" target="_blank" class="sponsor-item">
-                        <div class="sponsor-icon">
-                            <i class="fas fa-university"></i>
-                        </div>
-                        <span class="sponsor-name">City Bank</span>
-                        <span class="sponsor-tag">Find Branch</span>
-                    </a>
-                    
-                    <!-- Sponsor 7 -->
-                    <a href="https://www.amazon.com" target="_blank" class="sponsor-item">
-                        <div class="sponsor-icon">
-                            <i class="fab fa-amazon"></i>
-                        </div>
-                        <span class="sponsor-name">Amazon</span>
-                        <span class="sponsor-tag">Shop Now</span>
-                    </a>
-                    
-                    <!-- Sponsor 8 -->
-                    <a href="tel:+18004445555" class="sponsor-item">
-                        <div class="sponsor-icon">
-                            <i class="fas fa-palette"></i>
-                        </div>
-                        <span class="sponsor-name">ArtHub</span>
-                        <span class="sponsor-tag">Supplies</span>
-                    </a>
-                    
-                    <!-- Duplicate for seamless loop -->
-                    <!-- Sponsor 1 -->
-                    <a href="https://www.cocacola.com" target="_blank" class="sponsor-item">
-                        <div class="sponsor-icon">
-                            <i class="fas fa-wine-bottle"></i>
-                        </div>
-                        <span class="sponsor-name">Coca-Cola</span>
-                        <span class="sponsor-tag">Beverage Partner</span>
-                    </a>
-                    
-                    <!-- Sponsor 2 -->
-                    <a href="https://www.spotify.com" target="_blank" class="sponsor-item">
-                        <div class="sponsor-icon">
-                            <i class="fab fa-spotify"></i>
-                        </div>
-                        <span class="sponsor-name">Spotify</span>
-                        <span class="sponsor-tag">Music Partner</span>
-                    </a>
-                    
-                    <!-- Sponsor 3 -->
-                    <a href="tel:+18002223333" class="sponsor-item">
-                        <div class="sponsor-icon">
-                            <i class="fas fa-mobile-alt"></i>
-                        </div>
-                        <span class="sponsor-name">TechGiant</span>
-                        <span class="sponsor-tag">Call Now</span>
-                    </a>
-                    
-                    <!-- Sponsor 4 -->
-                    <a href="https://www.redbull.com" target="_blank" class="sponsor-item">
-                        <div class="sponsor-icon">
-                            <i class="fas fa-bolt"></i>
-                        </div>
-                        <span class="sponsor-name">Red Bull</span>
-                        <span class="sponsor-tag">Energy Partner</span>
-                    </a>
-                    
-                    <!-- Sponsor 5 -->
-                    <a href="https://www.nike.com" target="_blank" class="sponsor-item">
-                        <div class="sponsor-icon">
-                            <i class="fas fa-running"></i>
-                        </div>
-                        <span class="sponsor-name">Nike</span>
-                        <span class="sponsor-tag">Sports Partner</span>
-                    </a>
-                    
-                    <!-- Sponsor 6 -->
-                    <a href="https://goo.gl/maps/example" target="_blank" class="sponsor-item">
-                        <div class="sponsor-icon">
-                            <i class="fas fa-university"></i>
-                        </div>
-                        <span class="sponsor-name">City Bank</span>
-                        <span class="sponsor-tag">Find Branch</span>
-                    </a>
-                    
-                    <!-- Sponsor 7 -->
-                    <a href="https://www.amazon.com" target="_blank" class="sponsor-item">
-                        <div class="sponsor-icon">
-                            <i class="fab fa-amazon"></i>
-                        </div>
-                        <span class="sponsor-name">Amazon</span>
-                        <span class="sponsor-tag">Shop Now</span>
-                    </a>
-                    
-                    <!-- Sponsor 8 -->
-                    <a href="tel:+18004445555" class="sponsor-item">
-                        <div class="sponsor-icon">
-                            <i class="fas fa-palette"></i>
-                        </div>
-                        <span class="sponsor-name">ArtHub</span>
-                        <span class="sponsor-tag">Supplies</span>
-                    </a>
-                </div>
-            </div>
-            
-            <!-- Marquee Track 2 (Right to Left - Slower) -->
-            <div class="marquee-track marquee-reverse">
-                <div class="marquee-content">
-                    <!-- Sponsor 9 -->
-                    <a href="https://www.apple.com" target="_blank" class="sponsor-item">
-                        <div class="sponsor-icon">
-                            <i class="fab fa-apple"></i>
-                        </div>
-                        <span class="sponsor-name">Apple</span>
-                        <span class="sponsor-tag">Tech Partner</span>
-                    </a>
-                    
-                    <!-- Sponsor 10 -->
-                    <a href="https://www.adobe.com" target="_blank" class="sponsor-item">
-                        <div class="sponsor-icon">
-                            <i class="fab fa-adobe"></i>
-                        </div>
-                        <span class="sponsor-name">Adobe</span>
-                        <span class="sponsor-tag">Creative Partner</span>
-                    </a>
-                    
-                    <!-- Sponsor 11 -->
-                    <a href="tel:+18005556666" class="sponsor-item">
-                        <div class="sponsor-icon">
-                            <i class="fas fa-tshirt"></i>
-                        </div>
-                        <span class="sponsor-name">StyleWear</span>
-                        <span class="sponsor-tag">Merchandise</span>
-                    </a>
-                    
-                    <!-- Sponsor 12 -->
-                    <a href="https://www.netflix.com" target="_blank" class="sponsor-item">
-                        <div class="sponsor-icon">
-                            <i class="fab fa-netflix"></i>
-                        </div>
-                        <span class="sponsor-name">Netflix</span>
-                        <span class="sponsor-tag">Media Partner</span>
-                    </a>
-                    
-                    <!-- Sponsor 13 -->
-                    <a href="https://goo.gl/maps/example2" target="_blank" class="sponsor-item">
-                        <div class="sponsor-icon">
-                            <i class="fas fa-hotel"></i>
-                        </div>
-                        <span class="sponsor-name">Grand Hotel</span>
-                        <span class="sponsor-tag">Stay Here</span>
-                    </a>
-                    
-                    <!-- Sponsor 14 -->
-                    <a href="https://www.samsung.com" target="_blank" class="sponsor-item">
-                        <div class="sponsor-icon">
-                            <i class="fas fa-tv"></i>
-                        </div>
-                        <span class="sponsor-name">Samsung</span>
-                        <span class="sponsor-tag">Electronics</span>
-                    </a>
-                    
-                    <!-- Duplicate for seamless loop -->
-                    <!-- Sponsor 9 -->
-                    <a href="https://www.apple.com" target="_blank" class="sponsor-item">
-                        <div class="sponsor-icon">
-                            <i class="fab fa-apple"></i>
-                        </div>
-                        <span class="sponsor-name">Apple</span>
-                        <span class="sponsor-tag">Tech Partner</span>
-                    </a>
-                    
-                    <!-- Sponsor 10 -->
-                    <a href="https://www.adobe.com" target="_blank" class="sponsor-item">
-                        <div class="sponsor-icon">
-                            <i class="fab fa-adobe"></i>
-                        </div>
-                        <span class="sponsor-name">Adobe</span>
-                        <span class="sponsor-tag">Creative Partner</span>
-                    </a>
-                    
-                    <!-- Sponsor 11 -->
-                    <a href="tel:+18005556666" class="sponsor-item">
-                        <div class="sponsor-icon">
-                            <i class="fas fa-tshirt"></i>
-                        </div>
-                        <span class="sponsor-name">StyleWear</span>
-                        <span class="sponsor-tag">Merchandise</span>
-                    </a>
-                    
-                    <!-- Sponsor 12 -->
-                    <a href="https://www.netflix.com" target="_blank" class="sponsor-item">
-                        <div class="sponsor-icon">
-                            <i class="fab fa-netflix"></i>
-                        </div>
-                        <span class="sponsor-name">Netflix</span>
-                        <span class="sponsor-tag">Media Partner</span>
-                    </a>
-                    
-                    <!-- Sponsor 13 -->
-                    <a href="https://goo.gl/maps/example2" target="_blank" class="sponsor-item">
-                        <div class="sponsor-icon">
-                            <i class="fas fa-hotel"></i>
-                        </div>
-                        <span class="sponsor-name">Grand Hotel</span>
-                        <span class="sponsor-tag">Stay Here</span>
-                    </a>
-                    
-                    <!-- Sponsor 14 -->
-                    <a href="https://www.samsung.com" target="_blank" class="sponsor-item">
-                        <div class="sponsor-icon">
-                            <i class="fas fa-tv"></i>
-                        </div>
-                        <span class="sponsor-name">Samsung</span>
-                        <span class="sponsor-tag">Electronics</span>
-                    </a>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Static Sponsor Info -->
-        <div style="text-align: center; margin-top: 3rem; padding-top: 2rem; border-top: 1px solid rgba(255, 255, 255, 0.2);">
-            <p style="margin-bottom: 1rem;">Want to become a sponsor?</p>
-            <a href="mailto:srishti2k26@gmail.com" class="btn" style="background: white; color: var(--primary);">
-                <i class="fas fa-handshake"></i> Partner With Us
-            </a>
-        </div>
-    </div>
-</section>
-<style>
-    /* Marquee Styles */
-    .marquee-container {
-        position: relative;
-        width: 100%;
-        overflow: hidden;
-        margin: 2rem 0;
-    }
-    
-    .marquee-track {
-        display: flex;
-        width: fit-content;
-        animation: marqueeScroll 40s linear infinite;
-    }
-    
-    .marquee-reverse {
-        animation: marqueeScrollReverse 50s linear infinite;
-        margin-top: 1.5rem;
-    }
-    
-    .marquee-content {
-        display: flex;
-        gap: 2rem;
-        padding: 0 1rem;
-    }
-    
-    @keyframes marqueeScroll {
-        0% {
-            transform: translateX(0);
-        }
-        100% {
-            transform: translateX(-50%);
-        }
-    }
-    
-    @keyframes marqueeScrollReverse {
-        0% {
-            transform: translateX(-50%);
-        }
-        100% {
-            transform: translateX(0);
-        }
-    }
-    
-    .sponsor-item {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        background: rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(10px);
-        border-radius: 10px;
-        padding: 1.5rem;
-        min-width: 180px;
-        height: 180px;
-        text-decoration: none;
-        color: white;
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        transition: all 0.3s ease;
-        position: relative;
-        overflow: hidden;
-    }
-    
-    .sponsor-item::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-        transition: left 0.5s;
-    }
-    
-    .sponsor-item:hover {
-        background: rgba(255, 255, 255, 0.2);
-        transform: translateY(-5px);
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-        border-color: rgba(255, 255, 255, 0.4);
-    }
-    
-    .sponsor-item:hover::before {
-        left: 100%;
-    }
-    
-    .sponsor-icon {
-        font-size: 2.5rem;
-        margin-bottom: 1rem;
-        color: white;
-    }
-    
-    .sponsor-name {
-        font-weight: 600;
-        font-size: 1.1rem;
-        margin-bottom: 0.5rem;
-        text-align: center;
-    }
-    
-    .sponsor-tag {
-        font-size: 0.85rem;
-        opacity: 0.9;
-        background: rgba(255, 255, 255, 0.15);
-        padding: 0.3rem 0.8rem;
-        border-radius: 20px;
-        margin-top: 0.5rem;
-    }
-    
-    /* Pause animation on hover */
-    .marquee-container:hover .marquee-track {
-        animation-play-state: paused;
-    }
-    
-    .marquee-container:hover .marquee-reverse {
-        animation-play-state: paused;
-    }
-    
-    /* Responsive Styles */
-    @media (max-width: 768px) {
-        .sponsor-item {
-            min-width: 150px;
-            height: 150px;
-            padding: 1rem;
-        }
-        
-        .sponsor-icon {
-            font-size: 2rem;
-        }
-        
-        .sponsor-name {
-            font-size: 1rem;
-        }
-        
-        .sponsor-tag {
-            font-size: 0.75rem;
-        }
-        
-        .marquee-track {
-            animation: marqueeScroll 30s linear infinite;
-        }
-        
-        .marquee-reverse {
-            animation: marqueeScrollReverse 40s linear infinite;
-        }
-    }
-    
-    @media (max-width: 480px) {
-        #sponsors-marquee {
-            padding: 3rem 0;
-        }
-        
-        .sponsor-item {
-            min-width: 130px;
-            height: 130px;
-        }
-        
-        .marquee-content {
-            gap: 1rem;
-        }
-    }
-</style>
-
     <!-- Events Section -->
-    <section class="section" id="events">
+    <section class="section" id="events" style="background: var(--light);">
         <div class="container">
-            <h2 class="section-title">Featured Events</h2>
+            <div class="section-title animate-fade-in">
+                <h2>Featured Events</h2>
+            </div>
             <div class="events-grid">
                 <!-- Event 1 -->
-                <div class="event-card">
+                <div class="event-card animate-slide-up">
+                    <div class="event-badge">Day 1</div>
                     <div class="event-image">
                         <img src="Skit.webp" alt="Skit">
                     </div>
                     <div class="event-info">
-                        <h3>Skit</h3>
-                        <div class="date">
-                            <i class="far fa-calendar-alt"></i>
-                            <span>January 31st, 2026</span>
+                        <h3>Skit Competition</h3>
+                        <div class="event-meta">
+                            <span><i class="far fa-calendar-alt"></i> January 31st, 2026</span>
+                            <span><i class="fas fa-clock"></i> 6:00 PM</span>
+                            <span><i class="fas fa-map-marker-alt"></i> Auditorium</span>
                         </div>
-                        <div class="location">
-                            <i class="fas fa-map-marker-alt"></i>
-                            <span>Auditorium</span>
-                        </div>
-                    <p>The ultimate showdown of Acting, Reviving Unreals into Reality!</p>
+                        <p>The ultimate showdown of acting talent! Teams will bring stories to life in this dramatic competition that revives unreal scenarios into reality.</p>
                     </div>
                 </div>
                 
                 <!-- Event 2 -->
-                <div class="event-card">
+                <div class="event-card animate-slide-up" style="animation-delay: 0.2s;">
+                    <div class="event-badge">Day 2</div>
                     <div class="event-image">
                         <img src="Dance.webp" alt="Dance Competition">
                     </div>
                     <div class="event-info">
                         <h3>Dance Fusion</h3>
-                        <div class="date">
-                            <i class="far fa-calendar-alt"></i>
-                            <span>1st Feb, 2026</span>
+                        <div class="event-meta">
+                            <span><i class="far fa-calendar-alt"></i> February 1st, 2026</span>
+                            <span><i class="fas fa-clock"></i> 7:30 PM</span>
+                            <span><i class="fas fa-map-marker-alt"></i> Auditorium</span>
                         </div>
-                        <div class="location">
-                            <i class="fas fa-map-marker-alt"></i>
-                            <span>Auditorium</span>
-                        </div>
-                        <p>A dance competition where teams blend different dance styles to create something unique and mesmerizing.</p>
+                        <p>A dance competition where teams blend different dance styles to create unique and mesmerizing performances that transcend cultural boundaries.</p>
                     </div>
                 </div>
                 
                 <!-- Event 3 -->
-                <div class="event-card">
+                <div class="event-card animate-slide-up" style="animation-delay: 0.4s;">
+                    <div class="event-badge">Day 3</div>
                     <div class="event-image">
                         <img src="singing.webp" alt="Singing">
                     </div>
                     <div class="event-info">
                         <h3>Singing Competition</h3>
-                        <div class="date">
-                            <i class="far fa-calendar-alt"></i>
-                            <span>2nd Feb, 2026</span>
+                        <div class="event-meta">
+                            <span><i class="far fa-calendar-alt"></i> February 2nd, 2026</span>
+                            <span><i class="fas fa-clock"></i> 5:00 PM</span>
+                            <span><i class="fas fa-map-marker-alt"></i> Auditorium</span>
                         </div>
-                        <div class="location">
-                            <i class="fas fa-map-marker-alt"></i>
-                            <span>Auditorium</span>
-                        </div>
-                        <p>Mesmerizing the environment by the power of Songs!</p>
+                        <p>Witness the power of voice as talented vocalists mesmerize the audience with their soulful renditions across various musical genres.</p>
                     </div>
                 </div>
             </div>
         </div>
     </section>
-    <!-- Sponsors Section -->
-<section class="section" id="sponsors" style="background-color: var(--light);">
-    <div class="container">
-        <h2 class="section-title">Our Sponsors</h2>
-        <p style="text-align: center; margin-bottom: 3rem; max-width: 800px; margin-left: auto; margin-right: auto;">
-            We're grateful to our amazing sponsors who make Srishti-2k26 possible. Click on any logo to visit their website or contact them.
-        </p>
-        
-        <!-- Platinum Sponsors -->
-        <div class="sponsor-tier">
-            <h3 style="text-align: center; color: var(--secondary); margin-bottom: 2rem; font-size: 1.5rem;">
-                <i class="fas fa-crown" style="color: #FFD700; margin-right: 10px;"></i>Platinum Sponsors
-            </h3>
-            <div class="sponsor-grid platinum">
-                <div class="sponsor-card">
-                    <a href="https://www.cocacola.com" target="_blank" class="sponsor-link">
-                        <div class="sponsor-logo">
-                            <i class="fas fa-wine-bottle" style="font-size: 3rem; color: #F40009;"></i>
-                            <h4>Coca-Cola</h4>
-                        </div>
-                        <p class="sponsor-desc">Official Beverage Partner</p>
-                        <div class="sponsor-contact">
-                            <small><i class="fas fa-external-link-alt"></i> Visit Website</small>
-                        </div>
-                    </a>
+
+    <!-- Animated Sponsors Marquee -->
+    <section id="sponsors-marquee">
+        <div class="container">
+            <div class="sponsor-header animate-fade-in">
+                <h2>Our Valued Sponsors</h2>
+                <p>We proudly present our partners who make Srishti-2k26 possible. Click on any sponsor to connect with them.</p>
+            </div>
+            
+            <!-- Marquee Container -->
+            <div class="marquee-container">
+                <!-- Marquee Track 1 (Left to Right) -->
+                <div class="marquee-track">
+                    <div class="marquee-content">
+                        <!-- Sponsor Items (duplicated for seamless loop) -->
+                        <a href="https://www.cocacola.com" target="_blank" class="sponsor-item">
+                            <div class="sponsor-icon">
+                                <i class="fas fa-wine-bottle"></i>
+                            </div>
+                            <span class="sponsor-name">Coca-Cola</span>
+                            <span class="sponsor-tag">Beverage Partner</span>
+                        </a>
+                        
+                        <a href="https://www.spotify.com" target="_blank" class="sponsor-item">
+                            <div class="sponsor-icon">
+                                <i class="fab fa-spotify"></i>
+                            </div>
+                            <span class="sponsor-name">Spotify</span>
+                            <span class="sponsor-tag">Music Partner</span>
+                        </a>
+                        
+                        <a href="tel:+18002223333" class="sponsor-item">
+                            <div class="sponsor-icon">
+                                <i class="fas fa-mobile-alt"></i>
+                            </div>
+                            <span class="sponsor-name">TechGiant</span>
+                            <span class="sponsor-tag">Call Now</span>
+                        </a>
+                        
+                        <a href="https://www.redbull.com" target="_blank" class="sponsor-item">
+                            <div class="sponsor-icon">
+                                <i class="fas fa-bolt"></i>
+                            </div>
+                            <span class="sponsor-name">Red Bull</span>
+                            <span class="sponsor-tag">Energy Partner</span>
+                        </a>
+                        
+                        <a href="https://www.nike.com" target="_blank" class="sponsor-item">
+                            <div class="sponsor-icon">
+                                <i class="fas fa-running"></i>
+                            </div>
+                            <span class="sponsor-name">Nike</span>
+                            <span class="sponsor-tag">Sports Partner</span>
+                        </a>
+                        
+                        <a href="https://goo.gl/maps/example" target="_blank" class="sponsor-item">
+                            <div class="sponsor-icon">
+                                <i class="fas fa-university"></i>
+                            </div>
+                            <span class="sponsor-name">City Bank</span>
+                            <span class="sponsor-tag">Find Branch</span>
+                        </a>
+                        
+                        <!-- Duplicates for seamless loop -->
+                        <a href="https://www.cocacola.com" target="_blank" class="sponsor-item">
+                            <div class="sponsor-icon">
+                                <i class="fas fa-wine-bottle"></i>
+                            </div>
+                            <span class="sponsor-name">Coca-Cola</span>
+                            <span class="sponsor-tag">Beverage Partner</span>
+                        </a>
+                        
+                        <a href="https://www.spotify.com" target="_blank" class="sponsor-item">
+                            <div class="sponsor-icon">
+                                <i class="fab fa-spotify"></i>
+                            </div>
+                            <span class="sponsor-name">Spotify</span>
+                            <span class="sponsor-tag">Music Partner</span>
+                        </a>
+                        
+                        <a href="tel:+18002223333" class="sponsor-item">
+                            <div class="sponsor-icon">
+                                <i class="fas fa-mobile-alt"></i>
+                            </div>
+                            <span class="sponsor-name">TechGiant</span>
+                            <span class="sponsor-tag">Call Now</span>
+                        </a>
+                    </div>
                 </div>
                 
-                <div class="sponsor-card">
-                    <a href="tel:+18002223333" class="sponsor-link">
-                        <div class="sponsor-logo">
-                            <i class="fas fa-mobile-alt" style="font-size: 3rem; color: #000000;"></i>
-                            <h4>TechGiant Inc.</h4>
-                        </div>
-                        <p class="sponsor-desc">Technology Partner</p>
-                        <div class="sponsor-contact">
-                            <small><i class="fas fa-phone"></i> Call: 1-800-222-3333</small>
-                        </div>
-                    </a>
-                </div>
-                
-                <div class="sponsor-card">
-                    <a href="https://goo.gl/maps/example" target="_blank" class="sponsor-link">
-                        <div class="sponsor-logo">
-                            <i class="fas fa-university" style="font-size: 3rem; color: #1E90FF;"></i>
-                            <h4>City Bank</h4>
-                        </div>
-                        <p class="sponsor-desc">Financial Partner</p>
-                        <div class="sponsor-contact">
-                            <small><i class="fas fa-map-marker-alt"></i> Find Branch</small>
-                        </div>
-                    </a>
+                <!-- Marquee Track 2 (Right to Left - Slower) -->
+                <div class="marquee-track marquee-reverse">
+                    <div class="marquee-content">
+                        <a href="https://www.apple.com" target="_blank" class="sponsor-item">
+                            <div class="sponsor-icon">
+                                <i class="fab fa-apple"></i>
+                            </div>
+                            <span class="sponsor-name">Apple</span>
+                            <span class="sponsor-tag">Tech Partner</span>
+                        </a>
+                        
+                        <a href="https://www.adobe.com" target="_blank" class="sponsor-item">
+                            <div class="sponsor-icon">
+                                <i class="fab fa-adobe"></i>
+                            </div>
+                            <span class="sponsor-name">Adobe</span>
+                            <span class="sponsor-tag">Creative Partner</span>
+                        </a>
+                        
+                        <a href="tel:+18005556666" class="sponsor-item">
+                            <div class="sponsor-icon">
+                                <i class="fas fa-tshirt"></i>
+                            </div>
+                            <span class="sponsor-name">StyleWear</span>
+                            <span class="sponsor-tag">Merchandise</span>
+                        </a>
+                        
+                        <a href="https://www.netflix.com" target="_blank" class="sponsor-item">
+                            <div class="sponsor-icon">
+                                <i class="fab fa-netflix"></i>
+                            </div>
+                            <span class="sponsor-name">Netflix</span>
+                            <span class="sponsor-tag">Media Partner</span>
+                        </a>
+                        
+                        <a href="https://goo.gl/maps/example2" target="_blank" class="sponsor-item">
+                            <div class="sponsor-icon">
+                                <i class="fas fa-hotel"></i>
+                            </div>
+                            <span class="sponsor-name">Grand Hotel</span>
+                            <span class="sponsor-tag">Stay Here</span>
+                        </a>
+                        
+                        <a href="https://www.samsung.com" target="_blank" class="sponsor-item">
+                            <div class="sponsor-icon">
+                                <i class="fas fa-tv"></i>
+                            </div>
+                            <span class="sponsor-name">Samsung</span>
+                            <span class="sponsor-tag">Electronics</span>
+                        </a>
+                        
+                        <!-- Duplicates for seamless loop -->
+                        <a href="https://www.apple.com" target="_blank" class="sponsor-item">
+                            <div class="sponsor-icon">
+                                <i class="fab fa-apple"></i>
+                            </div>
+                            <span class="sponsor-name">Apple</span>
+                            <span class="sponsor-tag">Tech Partner</span>
+                        </a>
+                        
+                        <a href="https://www.adobe.com" target="_blank" class="sponsor-item">
+                            <div class="sponsor-icon">
+                                <i class="fab fa-adobe"></i>
+                            </div>
+                            <span class="sponsor-name">Adobe</span>
+                            <span class="sponsor-tag">Creative Partner</span>
+                        </a>
+                    </div>
                 </div>
             </div>
-        </div>
-        
-        <!-- Gold Sponsors -->
-        <div class="sponsor-tier">
-            <h3 style="text-align: center; color: var(--secondary); margin-bottom: 2rem; font-size: 1.5rem; margin-top: 3rem;">
-                <i class="fas fa-medal" style="color: #FFD700; margin-right: 10px;"></i>Gold Sponsors
-            </h3>
-            <div class="sponsor-grid gold">
-                <div class="sponsor-card">
-                    <a href="https://www.spotify.com" target="_blank" class="sponsor-link">
-                        <div class="sponsor-logo">
-                            <i class="fab fa-spotify" style="font-size: 2.5rem; color: #1DB954;"></i>
-                            <h4>Spotify</h4>
-                        </div>
-                        <p class="sponsor-desc">Music Partner</p>
-                    </a>
-                </div>
-                
-                <div class="sponsor-card">
-                    <a href="https://www.redbull.com" target="_blank" class="sponsor-link">
-                        <div class="sponsor-logo">
-                            <i class="fas fa-bolt" style="font-size: 2.5rem; color: #FF0000;"></i>
-                            <h4>Red Bull</h4>
-                        </div>
-                        <p class="sponsor-desc">Energy Partner</p>
-                    </a>
-                </div>
-                
-                <div class="sponsor-card">
-                    <a href="https://www.nike.com" target="_blank" class="sponsor-link">
-                        <div class="sponsor-logo">
-                            <i class="fas fa-running" style="font-size: 2.5rem; color: #111111;"></i>
-                            <h4>Nike</h4>
-                        </div>
-                        <p class="sponsor-desc">Sports Partner</p>
-                    </a>
-                </div>
-                
-                <div class="sponsor-card">
-                    <a href="tel:+18004445555" class="sponsor-link">
-                        <div class="sponsor-logo">
-                            <i class="fas fa-palette" style="font-size: 2.5rem; color: #9370DB;"></i>
-                            <h4>ArtHub</h4>
-                        </div>
-                        <p class="sponsor-desc">Art Supplies Partner</p>
-                        <div class="sponsor-contact">
-                            <!-- <small><i class="fas fa-phone"></i> Call for Supplies</small> -->
-                        </div>
-                    </a>
-                </div>
+            
+            <!-- Sponsor Call to Action -->
+            <div style="text-align: center; margin-top: 4rem;">
+                <a href="mailto:srishti2k26@gmail.com" class="btn" style="background: var(--accent);">
+                    <i class="fas fa-handshake"></i> Become a Sponsor
+                </a>
             </div>
         </div>
-        <style>
-        /* Sponsors Section Styles */
-    .sponsor-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 2rem;
-        justify-items: center;
-    }
-    
-    .sponsor-card {
-        background: white;
-        border-radius: 10px;
-        padding: 1.5rem;
-        text-align: center;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-        transition: all 0.3s ease;
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-    }
-    
-    .sponsor-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-    }
-    
-    .sponsor-link {
-        text-decoration: none;
-        color: var(--dark);
-        display: flex;
-        flex-direction: column;
-        height: 100%;
-        justify-content: space-between;
-    }
-    
-    .sponsor-logo {
-        margin-bottom: 1rem;
-    }
-    
-    .sponsor-logo h4 {
-        margin-top: 1rem;
-        color: var(--primary);
-        font-size: 1.2rem;
-    }
-    
-    .sponsor-desc {
-        color: var(--info);
-        font-weight: 500;
-        margin-bottom: 1rem;
-        flex-grow: 1;
-    }
-    
-    .sponsor-contact {
-        background: var(--light);
-        padding: 0.5rem;
-        border-radius: 5px;
-        margin-top: auto;
-    }
-    
-    .sponsor-contact small {
-        color: var(--primary);
-        font-weight: 500;
-    }
-    
-    .platinum .sponsor-card {
-        border-top: 4px solid #E5E4E2;
-    }
-    
-    .gold .sponsor-card {
-        border-top: 4px solid #FFD700;
-    }
-    
-    .sponsor-banner:hover {
-        transform: scale(1.01);
-        transition: transform 0.3s ease;
-    }
-    
-    @media (max-width: 768px) {
-        .sponsor-grid {
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        }
-        
-        .sponsor-banner div {
-            flex-direction: column;
-            text-align: center;
-        }
-    }
-</style>
-        
-        
-
-
-   
+    </section>
 
     <!-- Footer -->
     <footer id="contact">
@@ -1333,190 +1295,81 @@
                         <a href="#"><i class="fab fa-twitter"></i></a>
                         <a href="#"><i class="fab fa-instagram"></i></a>
                         <a href="#"><i class="fab fa-youtube"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
                     </div>
                 </div>
                 <div class="footer-column">
                     <h3>Quick Links</h3>
                     <ul>
-                        <li><a href="#home">Home</a></li>
-                        <li><a href="#about">About</a></li>
-                        <li><a href="#events">Events</a></li>
-                        <li><a href="#">Schedule</a></li>
-                        <li><a href="#">Gallery</a></li>
+                        <li><a href="#home"><i class="fas fa-home"></i> Home</a></li>
+                        <li><a href="#about"><i class="fas fa-info-circle"></i> About</a></li>
+                        <li><a href="#events"><i class="fas fa-calendar-alt"></i> Events</a></li>
+                        <li><a href="#"><i class="fas fa-clock"></i> Schedule</a></li>
+                        <li><a href="#"><i class="fas fa-images"></i> Gallery</a></li>
                     </ul>
                 </div>
                 <div class="footer-column">
                     <h3>Contact Us</h3>
                     <ul>
-                        <li><i class="fas fa-map-marker-alt"></i> I.Ag.Sc-BHU</li>
+                        <li><i class="fas fa-map-marker-alt"></i> I.Ag.Sc-BHU, Varanasi</li>
                         <li><i class="fas fa-phone"></i> +91 8004553607</li>
                         <li><i class="fas fa-envelope"></i> srishti2k26@gmail.com</li>
+                        <li><i class="fas fa-clock"></i> 10:00 AM - 6:00 PM</li>
                     </ul>
                 </div>
             </div>
             <div class="footer-bottom">
                 <p>&copy; 2026 Srishti-2k26. All Rights Reserved.</p>
-                <!-- <p>Developed by <span class="Rishabh">Rishabh Kr Mishra</span></p> -->
+                <p class="developer-credit">Developed with <i class="fas fa-heart" style="color: var(--accent);"></i> by <span class="Rishabh">Rishabh Kr Mishra</span></p>
             </div>
         </div>
     </footer>
 
-    <!-- Firebase and App Scripts -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-analytics.js"></script>
-
+    <!-- JavaScript -->
     <script>
-        // Firebase configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyBUoNm0UQOSKm0_s8k_uarYYn5nnbvASs8",
-            authDomain: "srishtiwebapp.firebaseapp.com",
-            projectId: "srishtiwebapp",
-            storageBucket: "srishtiwebapp.firebasestorage.app",
-            messagingSenderId: "662576698314",
-            appId: "1:662576698314:web:f9c85e13fc20bf5d283533",
-            measurementId: "G-9WGLWDQ59S"
-        };
-
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        firebase.analytics();
-
-        // DOM Elements
+        // Mobile Menu Toggle
         const mobileMenuBtn = document.getElementById('mobileMenuBtn');
         const mainNav = document.getElementById('mainNav');
-        const loginBtn = document.getElementById('loginBtn');
-        const registerBtn = document.getElementById('registerBtn');
-        const loginModal = document.getElementById('loginModal');
-        const closeModal = document.getElementById('closeModal');
-        const loginTabs = document.querySelectorAll('.login-tab');
-        const tabContents = document.querySelectorAll('.tab-content');
-        const studentLoginForm = document.getElementById('studentLoginForm');
-        const adminLoginForm = document.getElementById('adminLoginForm');
-        const studentRegisterLink = document.getElementById('studentRegisterLink');
-
-        // Mobile Menu Toggle
+        
         mobileMenuBtn.addEventListener('click', () => {
             mainNav.classList.toggle('active');
         });
-
-        // Login Modal
-        loginBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            loginModal.style.display = 'flex';
+        
+        // Close mobile menu when clicking a link
+        document.querySelectorAll('nav a').forEach(link => {
+            link.addEventListener('click', () => {
+                mainNav.classList.remove('active');
+            });
         });
-
-        registerBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            loginModal.style.display = 'flex';
-            // Switch to student tab if register is clicked
-            switchTab('student');
-        });
-
-        closeModal.addEventListener('click', () => {
-            loginModal.style.display = 'none';
-        });
-
-        window.addEventListener('click', (e) => {
-            if (e.target === loginModal) {
-                loginModal.style.display = 'none';
+        
+        // Countdown Timer
+        function updateCountdown() {
+            const festDate = new Date('January 31, 2026 18:00:00').getTime();
+            const now = new Date().getTime();
+            const timeLeft = festDate - now;
+            
+            if (timeLeft > 0) {
+                const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+                
+                document.getElementById('days').textContent = days.toString().padStart(2, '0');
+                document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
+                document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
+                document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
+            } else {
+                document.getElementById('countdown').innerHTML = '<h3>The Fest Has Begun!</h3>';
             }
-        });
-
-        // Tab Switching
-        loginTabs.forEach(tab => {
-            tab.addEventListener('click', () => {
-                const tabId = tab.getAttribute('data-tab');
-                switchTab(tabId);
-            });
-        });
-
-        function switchTab(tabId) {
-            loginTabs.forEach(tab => {
-                if (tab.getAttribute('data-tab') === tabId) {
-                    tab.classList.add('active');
-                } else {
-                    tab.classList.remove('active');
-                }
-            });
-
-            tabContents.forEach(content => {
-                if (content.id === `${tabId}-tab`) {
-                    content.classList.add('active');
-                } else {
-                    content.classList.remove('active');
-                }
-            });
         }
-
-        // Student Registration Link
-        studentRegisterLink.addEventListener('click', (e) => {
-            e.preventDefault();
-            alert('Registration will be available soon. Please check back later.');
-        });
-
-       // Student Login
-studentLoginForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const email = document.getElementById('studentEmail').value;
-    const password = document.getElementById('studentPassword').value;
-    const submitBtn = studentLoginForm.querySelector('button[type="submit"]');
-    
-    submitBtn.disabled = true;
-    submitBtn.textContent = 'Logging in...';
-
-    auth.signInWithEmailAndPassword(email, password)
-        .then((userCredential) => {
-            return db.collection('students').doc(userCredential.user.uid).get();
-        })
-        .then((doc) => {
-            if (doc.exists) {
-                window.location.href = 'student.html';
-            } else {
-                auth.signOut();
-                alert('No student profile found. Please register first.');
-            }
-        })
-        .catch((error) => {
-            alert('Login failed: ' + error.message);
-            submitBtn.disabled = false;
-            submitBtn.textContent = 'Login';
-        });
-});
-
-// Admin Login
-adminLoginForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const email = document.getElementById('adminEmail').value;
-    const password = document.getElementById('adminPassword').value;
-    const submitBtn = adminLoginForm.querySelector('button[type="submit"]');
-    
-    submitBtn.disabled = true;
-    submitBtn.textContent = 'Logging in...';
-
-    auth.signInWithEmailAndPassword(email, password)
-        .then((userCredential) => {
-            return db.collection('admins').doc(userCredential.user.uid).get();
-        })
-        .then((doc) => {
-            if (doc.exists) {
-                window.location.href = 'oiuytdxcvhjkjhgv.html';
-            } else {
-                auth.signOut();
-                alert('You are not authorized as admin.');
-            }
-        })
-        .catch((error) => {
-            alert('Admin login failed: ' + error.message);
-            submitBtn.disabled = false;
-            submitBtn.textContent = 'Login';
-        });
-});
-
-        // Smooth scrolling for anchor links
+        
+        // Update countdown every second
+        setInterval(updateCountdown, 1000);
+        updateCountdown(); // Initial call
+        
+        // Smooth Scrolling
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
+            anchor.addEventListener('click', function(e) {
                 e.preventDefault();
                 
                 const targetId = this.getAttribute('href');
@@ -1525,93 +1378,43 @@ adminLoginForm.addEventListener('submit', (e) => {
                 const targetElement = document.querySelector(targetId);
                 if (targetElement) {
                     window.scrollTo({
-                        top: targetElement.offsetTop - 70,
+                        top: targetElement.offsetTop - 80,
                         behavior: 'smooth'
                     });
-                    
-                    // Close mobile menu if open
-                    if (mainNav.classList.contains('active')) {
-                        mainNav.classList.remove('active');
-                    }
                 }
             });
         });
+        
+        // Add scroll effect to header
+        window.addEventListener('scroll', function() {
+            const header = document.querySelector('header');
+            if (window.scrollY > 100) {
+                header.style.background = 'rgba(26, 26, 46, 0.98)';
+                header.style.boxShadow = '0 5px 20px rgba(0, 0, 0, 0.3)';
+            } else {
+                header.style.background = 'rgba(26, 26, 46, 0.95)';
+                header.style.boxShadow = '0 5px 20px rgba(0, 0, 0, 0.2)';
+            }
+        });
+        
+        // Animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate-fade-in');
+                }
+            });
+        }, observerOptions);
+        
+        // Observe elements for animation
+        document.querySelectorAll('.section-title, .event-card, .about-content > div').forEach(el => {
+            observer.observe(el);
+        });
     </script>
-    <script>
-(function () {
-    "use strict";
-
-    /* Disable Right Click */
-    document.addEventListener("contextmenu", function (e) {
-        e.preventDefault();
-    });
-
-    /* Disable Keyboard Shortcuts */
-    document.addEventListener("keydown", function (e) {
-
-        // F12
-        if (e.keyCode === 123) {
-            e.preventDefault();
-            return false;
-        }
-
-        // Ctrl+Shift+I/J/C
-        if (e.ctrlKey && e.shiftKey && 
-           (e.keyCode === 73 || e.keyCode === 74 || e.keyCode === 67)) {
-            e.preventDefault();
-            return false;
-        }
-
-        // Ctrl+U (View Source)
-        if (e.ctrlKey && e.keyCode === 85) {
-            e.preventDefault();
-            return false;
-        }
-
-        // Ctrl+S (Save)
-        if (e.ctrlKey && e.keyCode === 83) {
-            e.preventDefault();
-            return false;
-        }
-
-        // Ctrl+P (Print)
-        if (e.ctrlKey && e.keyCode === 80) {
-            e.preventDefault();
-            return false;
-        }
-    });
-
-    /* Disable Text Selection */
-    document.addEventListener("selectstart", function (e) {
-        e.preventDefault();
-    });
-
-    /* Disable Dragging */
-    document.addEventListener("dragstart", function (e) {
-        e.preventDefault();
-    });
-
-    /* DevTools Detection (Size-based) */
-    setInterval(function () {
-        const threshold = 160;
-        if (
-            window.outerWidth - window.innerWidth > threshold ||
-            window.outerHeight - window.innerHeight > threshold
-        ) {
-            document.body.innerHTML = "<h1 style='text-align:center;margin-top:20%;'>⚠️ Developer Tools Detected</h1>";
-            window.location.reload();
-        }
-    }, 1000);
-
-    /* Console Warning */
-    setTimeout(function () {
-        console.clear();
-        console.log("%cSTOP!", "color:red;font-size:40px;font-weight:bold;");
-        console.log("%cThis site is protected.", "font-size:18px;");
-    }, 1000);
-
-})();
-</script>
-
 </body>
 </html>
