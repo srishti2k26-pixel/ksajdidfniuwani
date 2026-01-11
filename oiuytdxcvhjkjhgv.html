@@ -164,12 +164,15 @@
       signOut
     } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
     import {
-      getFirestore,
-      collection,
-      getDocs,
-      doc,
-      getDoc
-    } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+  getFirestore,
+  collection,
+  getDocs,
+  doc,
+  getDoc,
+  query,
+  where
+} from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+
 
     const firebaseConfig = {
       apiKey: "AIzaSyBUoNm0UQOSKm0_s8k_uarYYn5nnbvASs8",
@@ -210,7 +213,7 @@
       // ✅ Admin verified
       showDashboard();
       loadEvents();
-      loadUsers();
+      
     });
 
     // 🔐 LOGIN
@@ -267,93 +270,92 @@
       });
     }
 
-    // 👥 USERS
-    async function loadUsers() {
-      const snapshot = await getDocs(collection(db, "users"));
-      allUsers = snapshot.docs.map(d => d.data());
-      // Update total users count
-      document.getElementById("totalUsers").textContent = allUsers.length;
-    }
+    
 
     // 🔍 FILTER
-    window.filterByEvent = () => {
-      const eventSelect = document.getElementById("eventSelect");
-      currentEvent = eventSelect.value;
-      const tableBody = document.getElementById("tableBody");
-      const selectedEventLabel = document.getElementById("selectedEventLabel");
-      
-      if (!currentEvent) {
-        alert("Please select an event first");
-        return;
-      }
-      
-      // Update event label
-      selectedEventLabel.textContent = `Event: ${currentEvent}`;
-      
-      // Filter users
-      const filteredUsers = allUsers.filter(u => (u.selectedEvents || []).includes(currentEvent));
-      
-      // Update filtered count
-      document.getElementById("filteredCount").textContent = filteredUsers.length;
-      
-      // Update table
-      if (filteredUsers.length === 0) {
-        tableBody.innerHTML = `
-          <tr class="empty-row">
-            <td colspan="5">
-              <i class="fas fa-users-slash"></i>
-              <p>No participants found for this event</p>
-            </td>
-          </tr>
-        `;
-        return;
-      }
-      
-      tableBody.innerHTML = "";
-      filteredUsers.forEach(u => {
-        const row = document.createElement("tr");
-        row.innerHTML = `
-          <td><i class="fas fa-user-circle"></i> ${u.fullName || "—"}</td>
-          <td><span class="badge">${u.rollNumber || "—"}</span></td>
-          <td>${u.phone || "—"}</td>
-          <td><span class="dept-badge">${u.department || "—"}</span></td>
-          <td><span class="year-badge">${u.classYear || "—"}</span></td>
-        `;
-        tableBody.appendChild(row);
-      });
-    };
+    window.filterByEvent = async () => {
+  const eventSelect = document.getElementById("eventSelect");
+  currentEvent = eventSelect.value;
+  const tableBody = document.getElementById("tableBody");
+  const selectedEventLabel = document.getElementById("selectedEventLabel");
+
+  if (!currentEvent) {
+    alert("Please select an event first");
+    return;
+  }
+
+  selectedEventLabel.textContent = `Event: ${currentEvent}`;
+  tableBody.innerHTML = "<tr><td colspan='5'>Loading...</td></tr>";
+
+  const usersRef = collection(db, "users");
+  const q = query(usersRef, where("selectedEvents", "array-contains", currentEvent));
+  const snapshot = await getDocs(q);
+
+  document.getElementById("filteredCount").textContent = snapshot.size;
+  document.getElementById("totalUsers").textContent = snapshot.size; // optional
+
+  if (snapshot.empty) {
+    tableBody.innerHTML = `
+      <tr class="empty-row">
+        <td colspan="5">
+          <i class="fas fa-users-slash"></i>
+          <p>No participants found for this event</p>
+        </td>
+      </tr>`;
+    return;
+  }
+
+  tableBody.innerHTML = "";
+
+  snapshot.forEach(d => {
+    const u = d.data();
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td><i class="fas fa-user-circle"></i> ${u.fullName || "—"}</td>
+      <td><span class="badge">${u.rollNumber || "—"}</span></td>
+      <td>${u.phone || "—"}</td>
+      <td><span class="dept-badge">${u.department || "—"}</span></td>
+      <td><span class="year-badge">${u.classYear || "—"}</span></td>
+    `;
+    tableBody.appendChild(row);
+  });
+};
+
 
     // 📥 EXPORT
-    window.exportExcel = () => {
-      if (!currentEvent) {
-        alert("Please select an event and load participants first");
-        return;
-      }
-      
-      const filteredUsers = allUsers.filter(u => (u.selectedEvents || []).includes(currentEvent));
-      
-      if (filteredUsers.length === 0) {
-        alert("No participants to export");
-        return;
-      }
-      
-      const rows = [["Name", "Roll No", "Phone", "Department", "Year"]];
-      
-      filteredUsers.forEach(u => {
-        rows.push([
-          u.fullName || "",
-          u.rollNumber || "",
-          u.phone || "",
-          u.department || "",
-          u.classYear || ""
-        ]);
-      });
-      
-      const wb = XLSX.utils.book_new();
-      const ws = XLSX.utils.aoa_to_sheet(rows);
-      XLSX.utils.book_append_sheet(wb, ws, currentEvent.substring(0, 31) || "Participants");
-      XLSX.writeFile(wb, `srishti_participants_${currentEvent.replace(/[^a-z0-9]/gi, '_')}.xlsx`);
-    };
+    window.exportExcel = async () => {
+  if (!currentEvent) {
+    alert("Please select an event and load participants first");
+    return;
+  }
+
+  const usersRef = collection(db, "users");
+  const q = query(usersRef, where("selectedEvents", "array-contains", currentEvent));
+  const snapshot = await getDocs(q);
+
+  if (snapshot.empty) {
+    alert("No participants to export");
+    return;
+  }
+
+  const rows = [["Name", "Roll No", "Phone", "Department", "Year"]];
+
+  snapshot.forEach(d => {
+    const u = d.data();
+    rows.push([
+      u.fullName || "",
+      u.rollNumber || "",
+      u.phone || "",
+      u.department || "",
+      u.classYear || ""
+    ]);
+  });
+
+  const wb = XLSX.utils.book_new();
+  const ws = XLSX.utils.aoa_to_sheet(rows);
+  XLSX.utils.book_append_sheet(wb, ws, currentEvent.substring(0, 31));
+  XLSX.writeFile(wb, `srishti_participants_${currentEvent.replace(/[^a-z0-9]/gi, "_")}.xlsx`);
+};
   </script>
 
   <!-- Styles -->
