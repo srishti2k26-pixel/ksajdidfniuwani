@@ -7,6 +7,24 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-analytics.js"></script>
+
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyBUoNm0UQOSKm0_s8k_uarYYn5nnbvASs8",
+    authDomain: "srishtiwebapp.firebaseapp.com",
+    projectId: "srishtiwebapp",
+    storageBucket: "srishtiwebapp.firebasestorage.app",
+    messagingSenderId: "662576698314",
+    appId: "1:662576698314:web:f9c85e13fc20bf5d283533",
+    measurementId: "G-9WGLWDQ59S"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  firebase.analytics(); // ✅ visitor tracking
+</script>
+
     <style>
         :root {
             --primary: #8a2be2;
