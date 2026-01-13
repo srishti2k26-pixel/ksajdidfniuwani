@@ -75,8 +75,14 @@
       `${allEvents.length} Programs`;
   }
 
+  renderEvents(allEvents);
+}
+function renderEvents(eventList) {
+  const container = document.getElementById("events");
+  container.innerHTML = "";
+
   // 👉 Sort: Registered first, then A–Z
-  const sorted = [...allEvents].sort((a, b) => {
+  const sorted = [...eventList].sort((a, b) => {
     const aJoined = selectedEvents.includes(a.title);
     const bJoined = selectedEvents.includes(b.title);
 
@@ -84,7 +90,6 @@
     return a.title.localeCompare(b.title);
   });
 
-  // 👉 Render
   sorted.forEach(e => {
     const joined = selectedEvents.includes(e.title);
 
@@ -115,6 +120,16 @@
     `;
   });
 }
+window.filterEvents = function () {
+  const query = document.getElementById("eventSearch").value.toLowerCase();
+
+  const filtered = allEvents.filter(e =>
+    e.title.toLowerCase().includes(query)
+  );
+
+  renderEvents(filtered);
+};
+
 
 
 
@@ -164,7 +179,8 @@
 document.getElementById("joinedCount").innerText = selectedEvents.length;
 
 // 🔥 re-render using cached events
-loadEvents();
+filterEvents(); // keeps search + sorting both
+
 
 
     
@@ -909,7 +925,7 @@ loadEvents();
     <div class="header-content">
       <div>
         <h1 class="fest-title">Srishti-2k26</h1>
-        <p class="fest-subtitle">Annual Cultural Fest Dashboard</p>
+        <p class="fest-subtitle">Annual Cultural Festival Dashboard</p>
       </div>
       <div class="user-welcome">
         <div class="user-avatar">
@@ -952,10 +968,27 @@ loadEvents();
     
     <!-- Events Section -->
     <div class="events-section">
-      <div class="section-header">
-        <h3>Available Programs</h3>
-        <div class="events-count" id="totalEvents">Loading...</div>
-      </div>
+      <div class="section-header" style="gap:16px; flex-wrap:wrap;">
+  <h3>Available Programs</h3>
+
+  <input
+    type="text"
+    id="eventSearch"
+    placeholder="Search program..."
+    oninput="filterEvents()"
+    style="
+      padding:10px 14px;
+      border-radius:10px;
+      border:1px solid #e2e8f0;
+      outline:none;
+      font-size:0.95rem;
+      min-width:220px;
+    "
+  />
+
+  <div class="events-count" id="totalEvents">Loading...</div>
+</div>
+
       
       <div class="events-grid" id="events">
         <!-- Events will be loaded here -->
@@ -986,4 +1019,3 @@ loadEvents();
 
 
 </html>
-
