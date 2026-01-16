@@ -552,6 +552,7 @@
             position: relative;
             overflow: hidden;
         }
+
         
         .sponsor-item:hover {
             background: rgba(255, 255, 255, 0.1);
@@ -559,6 +560,33 @@
             box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
             border-color: var(--accent);
         }
+
+        .sponsor-title {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: rgba(252, 4, 37, 0.808);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 2rem;
+            min-width: 200px;
+            height: 200px;
+            text-decoration: none;
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sponsor-title:hover {
+            background: rgba(243, 49, 227, 0.767);
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            border-color: var(--accent);
+        }
+
         
         .sponsor-icon {
             font-size: 3rem;
@@ -1146,72 +1174,74 @@
                 <div class="marquee-track">
                     <div class="marquee-content">
                         <!-- Sponsor Items (duplicated for seamless loop) -->
-                        <a href="https://www.cocacola.com" target="_blank" class="sponsor-item">
+                         <a href="" target="_blank" class="sponsor-item">
                             <div class="sponsor-icon">
-                                <i class="fas fa-wine-bottle"></i>
+                                <i class=""></i>
                             </div>
-                            <span class="sponsor-name">Coca-Cola</span>
-                            <span class="sponsor-tag">Beverage Partner</span>
-                        </a>
-                        
-                        <a href="https://www.spotify.com" target="_blank" class="sponsor-item">
-                            <div class="sponsor-icon">
-                                <i class="fab fa-spotify"></i>
-                            </div>
-                            <span class="sponsor-name">Spotify</span>
+                            <span class="sponsor-name">--</span>
                             <span class="sponsor-tag">Music Partner</span>
                         </a>
+
+                        <a href="https://maps.app.goo.gl/9uqsh6JF3q6Co4PM8?g_st=aw" target="_blank" class="sponsor-title">
+                            <div class="sponsor-icon">
+                                <i class="fas fa-female"></i>
+                            </div>
+                            <span class="sponsor-name">Kejriwal Vastralaya</span>
+                            <span class="sponsor-tag">Title Sponsor!</span>
+                        </a>
                         
-                        <a href="tel:+18002223333" class="sponsor-item">
+                        
+                        
+                        <a href="" class="sponsor-item">
                             <div class="sponsor-icon">
                                 <i class="fas fa-mobile-alt"></i>
                             </div>
-                            <span class="sponsor-name">TechGiant</span>
+                            <span class="sponsor-name">--</span>
                             <span class="sponsor-tag">Call Now</span>
                         </a>
                         
-                        <a href="https://www.redbull.com" target="_blank" class="sponsor-item">
+                        <a href="" target="_blank" class="sponsor-item">
                             <div class="sponsor-icon">
                                 <i class="fas fa-bolt"></i>
                             </div>
-                            <span class="sponsor-name">Red Bull</span>
+                            <span class="sponsor-name">--</span>
                             <span class="sponsor-tag">Energy Partner</span>
                         </a>
                         
-                        <a href="https://www.nike.com" target="_blank" class="sponsor-item">
+                        <a href="" target="_blank" class="sponsor-item">
                             <div class="sponsor-icon">
                                 <i class="fas fa-running"></i>
                             </div>
-                            <span class="sponsor-name">Nike</span>
+                            <span class="sponsor-name">--</span>
                             <span class="sponsor-tag">Sports Partner</span>
                         </a>
                         
-                        <a href="https://goo.gl/maps/example" target="_blank" class="sponsor-item">
+                        <a href="" target="_blank" class="sponsor-item">
                             <div class="sponsor-icon">
                                 <i class="fas fa-university"></i>
                             </div>
-                            <span class="sponsor-name">City Bank</span>
+                            <span class="sponsor-name">--</span>
                             <span class="sponsor-tag">Find Branch</span>
                         </a>
                         
                         <!-- Duplicates for seamless loop -->
-                        <a href="https://www.cocacola.com" target="_blank" class="sponsor-item">
+                        <a href="" target="_blank" class="sponsor-item">
                             <div class="sponsor-icon">
-                                <i class="fas fa-wine-bottle"></i>
+                                <i class=""></i>
                             </div>
-                            <span class="sponsor-name">Coca-Cola</span>
+                            <span class="sponsor-name">--</span>
                             <span class="sponsor-tag">Beverage Partner</span>
                         </a>
                         
-                        <a href="https://www.spotify.com" target="_blank" class="sponsor-item">
+                        <a href="" target="_blank" class="sponsor-item">
                             <div class="sponsor-icon">
-                                <i class="fab fa-spotify"></i>
+                                <i class=""></i>
                             </div>
-                            <span class="sponsor-name">Spotify</span>
+                            <span class="sponsor-name">--</span>
                             <span class="sponsor-tag">Music Partner</span>
                         </a>
                         
-                        <a href="tel:+18002223333" class="sponsor-item">
+                        <a href="" class="sponsor-item">
                             <div class="sponsor-icon">
                                 <i class="fas fa-mobile-alt"></i>
                             </div>
@@ -1224,19 +1254,19 @@
                 <!-- Marquee Track 2 (Right to Left - Slower) -->
                 <div class="marquee-track marquee-reverse">
                     <div class="marquee-content">
-                        <a href="https://www.apple.com" target="_blank" class="sponsor-item">
+                        <a href="" target="_blank" class="sponsor-item">
                             <div class="sponsor-icon">
                                 <i class="fab fa-apple"></i>
                             </div>
-                            <span class="sponsor-name">Apple</span>
+                            <span class="sponsor-name">--</span>
                             <span class="sponsor-tag">Tech Partner</span>
                         </a>
                         
-                        <a href="https://www.adobe.com" target="_blank" class="sponsor-item">
+                        <a href="" target="_blank" class="sponsor-item">
                             <div class="sponsor-icon">
                                 <i class="fab fa-adobe"></i>
                             </div>
-                            <span class="sponsor-name">Adobe</span>
+                            <span class="sponsor-name">--</span>
                             <span class="sponsor-tag">Creative Partner</span>
                         </a>
                         
@@ -1248,44 +1278,44 @@
                             <span class="sponsor-tag">Merchandise</span>
                         </a>
                         
-                        <a href="https://www.netflix.com" target="_blank" class="sponsor-item">
+                        <a href="" target="_blank" class="sponsor-item">
                             <div class="sponsor-icon">
-                                <i class="fab fa-netflix"></i>
+                                <i class=""></i>
                             </div>
-                            <span class="sponsor-name">Netflix</span>
+                            <span class="sponsor-name">--</span>
                             <span class="sponsor-tag">Media Partner</span>
                         </a>
                         
-                        <a href="https://goo.gl/maps/example2" target="_blank" class="sponsor-item">
+                        <a href="" target="_blank" class="sponsor-item">
                             <div class="sponsor-icon">
                                 <i class="fas fa-hotel"></i>
                             </div>
-                            <span class="sponsor-name">Grand Hotel</span>
+                            <span class="sponsor-name">--</span>
                             <span class="sponsor-tag">Stay Here</span>
                         </a>
                         
-                        <a href="https://www.samsung.com" target="_blank" class="sponsor-item">
+                        <a href="" target="_blank" class="sponsor-item">
                             <div class="sponsor-icon">
                                 <i class="fas fa-tv"></i>
                             </div>
-                            <span class="sponsor-name">Samsung</span>
+                            <span class="sponsor-name">--</span>
                             <span class="sponsor-tag">Electronics</span>
                         </a>
                         
                         <!-- Duplicates for seamless loop -->
-                        <a href="https://www.apple.com" target="_blank" class="sponsor-item">
+                        <a href="https://maps.app.goo.gl/9uqsh6JF3q6Co4PM8?g_st=aw" target="_blank" class="sponsor-title">
                             <div class="sponsor-icon">
-                                <i class="fab fa-apple"></i>
+                                <i class="fas fa-female"></i>
                             </div>
-                            <span class="sponsor-name">Apple</span>
-                            <span class="sponsor-tag">Tech Partner</span>
+                            <span class="sponsor-name">Kejriwal Vastralaya</span>
+                            <span class="sponsor-tag">Title Sponsor!</span>
                         </a>
                         
-                        <a href="https://www.adobe.com" target="_blank" class="sponsor-item">
+                        <a href="" target="_blank" class="sponsor-item">
                             <div class="sponsor-icon">
                                 <i class="fab fa-adobe"></i>
                             </div>
-                            <span class="sponsor-name">Adobe</span>
+                            <span class="sponsor-name">--</span>
                             <span class="sponsor-tag">Creative Partner</span>
                         </a>
                     </div>
