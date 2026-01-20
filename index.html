@@ -1033,9 +1033,70 @@
             from { transform: translateX(-50px); opacity: 0; }
             to { transform: translateX(0); opacity: 1; }
         }
+        /* ===== Simple Notice Popup ===== */
+.notice-popup{
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.55);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 5000;
+}
+
+.notice-card{
+    background: #ffffff;
+    color: #1a1a2e;
+    padding: 2rem 1.8rem;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 420px;
+    text-align: left;
+    position: relative;
+    cursor: pointer;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+}
+
+.notice-card h3{
+    margin-bottom: 0.6rem;
+    font-size: 1.3rem;
+}
+
+.notice-card p{
+    font-size: 0.95rem;
+    color: #444;
+}
+
+.notice-link{
+    display: inline-block;
+    margin-top: 1rem;
+    color: #8a2be2;
+    font-weight: 600;
+}
+
+.notice-close{
+    position: absolute;
+    top: 8px;
+    right: 12px;
+    font-size: 1.4rem;
+    cursor: pointer;
+    color: #666;
+}
+
     </style>
 </head>
 <body>
+    <!-- ===== Simple Notice Popup ===== -->
+<div id="entryPopup" class="notice-popup">
+  <div class="notice-card" onclick="redirectPopup()">
+    <span class="notice-close" onclick="closePopup(event)">×</span>
+
+    <h3>Important Notice</h3>
+    <p>Download,login and Use(Testing)</p>
+    <span class="notice-link">Continue →</span>
+  </div>
+</div>
+
     <!-- Header -->
     <header class="animate-fade-in">
         <div class="container header-container">
@@ -1522,6 +1583,18 @@
             </div>
         </div>
     </footer>
+
+    <script>
+  function closePopup(e){
+    e.stopPropagation();
+    document.getElementById("entryPopup").style.display = "none";
+  }
+
+  function redirectPopup(){
+    window.location.href = "https://play.google.com/store/apps/details?id=com.falconbeakventures.AgriAchiever&pcampaignid=web_share"; // your register page
+  }
+</script>
+
 
     <!-- JavaScript -->
     <script>
