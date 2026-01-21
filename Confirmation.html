@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Participation Confirmed | Srishti-2k26</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBUoNm0UQOSKm0_s8k_uarYYn5nnbvASs8",
+      authDomain: "srishtiwebapp.firebaseapp.com",
+      projectId: "srishtiwebapp"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        window.location.href = "sjniusghcvbiasoijhjg.html";
+        return;
+      }
+
+      const snap = await getDoc(doc(db, "users", user.uid));
+      if (!snap.exists()) return;
+
+      const u = snap.data();
+
+      document.getElementById("name").innerText = u.fullName;
+      document.getElementById("roll").innerText = `Roll No: ${u.rollNumber}`;
+      document.getElementById("dept").innerText =
+        `${u.department} • ${u.degreeName} • ${u.classYear}`;
+
+      const list = document.getElementById("eventList");
+      list.innerHTML = "";
+
+      if (!u.selectedEvents || u.selectedEvents.length === 0) {
+        list.innerHTML = `<p class="no-events">No event participation found.</p>`;
+        return;
+      }
+
+      u.selectedEvents.forEach(ev => {
+        list.innerHTML += `
+          <div class="event-item">
+            <i class="fas fa-check-circle"></i>
+            <span>${ev}</span>
+          </div>
+        `;
+      });
+
+      document.getElementById("count").innerText = u.selectedEvents.length;
+    });
+
+    import { signOut } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+
+window.logoutUser = async () => {
+  await signOut(auth);
+  window.location.href = "sjniusghcvbiasoijhjg.html"; // login page
+};
+
+
+  </script>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Inter, Arial, sans-serif;
+      background: linear-gradient(135deg,#667eea,#764ba2);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .card {
+      background: #fff;
+      max-width: 700px;
+      width: 100%;
+      border-radius: 22px;
+      padding: 40px 30px;
+      box-shadow: 0 25px 60px rgba(0,0,0,.25);
+      text-align: center;
+      position: relative;
+    }
+
+    .avatar{
+  width:90px;
+  height:90px;
+  border-radius:50%;
+  margin:auto;
+  margin-bottom:18px;
+  background: linear-gradient(135deg,#6366f1,#8b5cf6);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:white;
+  font-size:42px;
+  position:relative;
+  box-shadow:0 10px 25px rgba(99,102,241,.45);
+}
+
+.avatar::before{
+  content:"";
+  position:absolute;
+  inset:-5px;
+  border-radius:50%;
+  background:linear-gradient(135deg,#06b6d4,#6366f1);
+  z-index:-1;
+  opacity:.6;
+  filter: blur(2px);
+}
+
+
+    h1 {
+      margin: 10px 0 5px;
+      color: #1e293b;
+      font-size: 1.9rem;
+    }
+
+    .sub {
+      color: #64748b;
+      font-size: .95rem;
+      margin-bottom: 25px;
+    }
+
+    .student-box {
+      background: #f8fafc;
+      border-radius: 14px;
+      padding: 18px;
+      margin-bottom: 25px;
+      border: 1px solid #e2e8f0;
+    }
+
+    .student-box h2 {
+      margin: 0;
+      font-size: 1.2rem;
+      color: #334155;
+    }
+
+    .student-box p {
+      margin: 4px 0;
+      color: #64748b;
+      font-size: .9rem;
+    }
+
+    .events-title {
+      text-align: left;
+      font-weight: 700;
+      color: #334155;
+      margin-bottom: 12px;
+    }
+
+    .event-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .event-item {
+      background: linear-gradient(135deg,#ecfeff,#f0fdfa);
+      border: 1px solid #99f6e4;
+      padding: 12px 14px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 600;
+      color: #065f46;
+    }
+
+    .event-item i {
+      color: #10b981;
+      font-size: 1.1rem;
+    }
+
+    .footer-note {
+      margin-top: 30px;
+      font-size: .85rem;
+      color: #64748b;
+    }
+
+    .count {
+      background: #6366f1;
+      color: #fff;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: .8rem;
+      margin-left: 6px;
+    }
+
+    .no-events{
+      color:#ef4444;
+      font-weight:600;
+    }
+    .logout-btn{
+  margin-top:28px;
+  width:100%;
+  padding:12px;
+  border:none;
+  border-radius:12px;
+  background:linear-gradient(135deg,#ef4444,#dc2626);
+  color:white;
+  font-size:1rem;
+  font-weight:600;
+  cursor:pointer;
+  transition:.25s;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+}
+
+.logout-btn:hover{
+  transform:translateY(-2px);
+  box-shadow:0 10px 25px rgba(239,68,68,.4);
+}
+
+  </style>
+</head>
+
+<body>
+
+  <div class="card">
+    <div class="avatar">
+  <i class="fas fa-user-graduate"></i>
+</div>
+
+
+    <h1>Participation Confirmed</h1>
+    <div class="sub">Your registrations for Srishti-2k26 are successfully recorded.</div>
+
+    <div class="student-box">
+      <h2 id="name">Loading...</h2>
+      <p id="roll"></p>
+      <p id="dept"></p>
+    </div>
+
+    <div class="events-title">
+      Events Participated
+      <span class="count" id="count">0</span>
+    </div>
+
+    <div class="event-list" id="eventList">
+      Loading...
+    </div>
+
+    <button class="logout-btn" onclick="logoutUser()">
+  <i class="fas fa-sign-out-alt"></i> Logout
+</button>
+
+
+    <div class="footer-note">
+      ⚠️ Registrations are closed. No further changes are allowed.<br>
+      Please contact coordinators for any discrepancies.
+    </div>
+  </div>
+
+</body>
+</html>
