@@ -1,16 +1,25 @@
+<!-- dashboard.html -->
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <title>Participation Confirmed | Srishti-2k26</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
-
+  <title>Student Dashboard | Srishti-2k26</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
-    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+    import { getAuth, onAuthStateChanged, signOut } from
+      "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+    import {
+      getFirestore,
+      doc,
+      getDoc,
+      getDocs,
+      collection,
+      updateDoc,
+      arrayUnion,
+      arrayRemove
+    } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyBUoNm0UQOSKm0_s8k_uarYYn5nnbvASs8",
@@ -22,245 +31,991 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
+    let uid;
+    let selectedEvents = [];
+    let allEvents = [];   // 🔥 cache events
+
+    
+
     onAuthStateChanged(auth, async (user) => {
       if (!user) {
         window.location.href = "sjniusghcvbiasoijhjg.html";
         return;
       }
+      uid = user.uid;
+      await loadUser();
+      await loadEvents();
+    });
 
-      const snap = await getDoc(doc(db, "users", user.uid));
+    async function loadUser() {
+      const snap = await getDoc(doc(db, "users", uid));
       if (!snap.exists()) return;
 
       const u = snap.data();
+      selectedEvents = u.selectedEvents || [];
 
       document.getElementById("name").innerText = u.fullName;
       document.getElementById("roll").innerText = `Roll No: ${u.rollNumber}`;
       document.getElementById("dept").innerText =
         `${u.department} • ${u.degreeName} • ${u.classYear}`;
+        
+      // Update joined events counter
+      document.getElementById("joinedCount").innerText = selectedEvents.length;
+    }
 
-      const list = document.getElementById("eventList");
-      list.innerHTML = "";
+    async function loadEvents() {
+  const container = document.getElementById("events");
+  container.innerHTML = "";
 
-      if (!u.selectedEvents || u.selectedEvents.length === 0) {
-        list.innerHTML = `<p class="no-events">No event participation found.</p>`;
-        return;
-      }
+  // 🔥 Fetch only once
+  if (allEvents.length === 0) {
+    const snapshot = await getDocs(collection(db, "events"));
+    allEvents = snapshot.docs.map(d => d.data());
+    document.getElementById("totalEvents").innerText =
+      `${allEvents.length} Programs`;
+  }
 
-      u.selectedEvents.forEach(ev => {
-        list.innerHTML += `
-          <div class="event-item">
-            <i class="fas fa-check-circle"></i>
-            <span>${ev}</span>
+  renderEvents(allEvents);
+}
+function renderEvents(eventList) {
+  const container = document.getElementById("events");
+  container.innerHTML = "";
+
+  // 👉 Sort: Registered first, then A–Z
+  const sorted = [...eventList].sort((a, b) => {
+    const aJoined = selectedEvents.includes(a.title);
+    const bJoined = selectedEvents.includes(b.title);
+
+    if (aJoined !== bJoined) return bJoined - aJoined;
+    return a.title.localeCompare(b.title);
+  });
+
+  sorted.forEach(e => {
+    const joined = selectedEvents.includes(e.title);
+
+    container.innerHTML += `
+      <div class="event-card ${joined ? "joined" : ""}" id="event-${e.title.replace(/\s+/g, '-').replace(/[^\w-]/g, '').toLowerCase()}">
+        <div class="event-icon">
+          <i class="fas ${getEventIcon(e.category)}"></i>
+        </div>
+        <div class="event-details">
+          <div class="event-header">
+            <h4 class="event-title">${e.title}</h4>
+            ${e.category ? `<span class="event-category-badge">${e.category}</span>` : ''}
           </div>
-        `;
-      });
+          <div class="event-actions">
+            <span class="event-status">
+              ${joined ? '<i class="fas fa-check-circle"></i> Registered' : ''}
+            </span>
+            <button class="event-btn ${joined ? 'btn-remove' : 'btn-join'}"
+              onclick="toggleEvent('${e.title.replace(/'/g, "\\'")}', ${joined}, this)">
+              <span class="btn-text">${joined ? 'Unregister' : 'Register'}</span>
+              <span class="btn-loader" style="display: none;">
+                <i class="fas fa-spinner fa-spin"></i> Processing
+              </span>
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+  });
+}
+window.filterEvents = function () {
+  const query = document.getElementById("eventSearch").value.toLowerCase();
 
-      document.getElementById("count").innerText = u.selectedEvents.length;
-    });
+  const filtered = allEvents.filter(e =>
+    e.title.toLowerCase().includes(query)
+  );
 
-    import { signOut } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
-
-window.logoutUser = async () => {
-  await signOut(auth);
-  window.location.href = "sjniusghcvbiasoijhjg.html"; // login page
+  renderEvents(filtered);
 };
 
 
+
+
+    function getEventIcon(category) {
+      const icons = {
+        'Music': 'fa-music',
+        'Dance': 'fa-user-group',
+        'Drama': 'fa-masks-theater',
+        'Art': 'fa-palette',
+        'Literary': 'fa-book-open',
+        'Sports': 'fa-trophy',
+        'Food': 'fa-utensils',
+        'Workshop': 'fa-chalkboard-user'
+      };
+      
+      for (const [key, icon] of Object.entries(icons)) {
+        if (category && category.includes(key)) return icon;
+      }
+      return 'fa-calendar-alt';
+    }
+
+    window.toggleEvent = async function (event, joined, button) {
+  // Get button and card elements
+  const btnText = button.querySelector('.btn-text');
+  const btnLoader = button.querySelector('.btn-loader');
+  const eventCard = document.getElementById(`event-${event.replace(/\s+/g, '-').toLowerCase()}`);
+  
+  // Disable THIS button and show loader
+  button.disabled = true;
+  if (btnText) btnText.style.display = 'none';
+  if (btnLoader) btnLoader.style.display = 'inline-flex';
+  button.classList.add('processing');
+  if (eventCard) eventCard.classList.add('processing');
+
+  try {
+    const ref = doc(db, "users", uid);
+
+    if (joined) {
+  await updateDoc(ref, { selectedEvents: arrayRemove(event) });
+  selectedEvents = selectedEvents.filter(e => e !== event); // 🔥 local update
+} else {
+  await updateDoc(ref, { selectedEvents: arrayUnion(event) });
+  selectedEvents.push(event); // 🔥 local update
+}
+
+// 🔥 update counter
+document.getElementById("joinedCount").innerText = selectedEvents.length;
+
+// 🔥 re-render using cached events
+filterEvents(); // keeps search + sorting both
+
+
+
+    
+  } catch (error) {
+    console.error("Error toggling event:", error);
+    // Re-enable THIS button on error
+    button.disabled = false;
+    if (btnText) btnText.style.display = 'inline';
+    if (btnLoader) btnLoader.style.display = 'none';
+    button.classList.remove('processing');
+    if (eventCard) eventCard.classList.remove('processing');
+    
+    // Show error message
+    alert("Registrations are now Off");
+  }
+  // No finally block needed - after loadEvents(), new buttons will be created
+};
+
+    window.logout = () => signOut(auth);
+    
+    // Toggle menu on mobile
+    window.toggleMenu = () => {
+      const sidebar = document.querySelector('.sidebar');
+      sidebar.classList.toggle('active');
+    };
   </script>
 
   <style>
-    body {
+    :root {
+      --primary: #6366f1;
+      --primary-dark: #4f46e5;
+      --primary-light: #818cf8;
+      --secondary: #64748b;
+      --accent: #06b6d4;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --error: #ef4444;
+      --dark: #1e293b;
+      --light: #f8fafc;
+      --card-bg: #ffffff;
+      --border: #e2e8f0;
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      --shadow-xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+      --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      --gradient-accent: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
+      --gradient-success: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      --gradient-card: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+    }
+    
+    * {
       margin: 0;
-      font-family: Inter, Arial, sans-serif;
-      background: linear-gradient(135deg,#667eea,#764ba2);
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    }
+    
+    body {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background-attachment: fixed;
+      color: #334155;
       min-height: 100vh;
+      line-height: 1.6;
+      position: relative;
+    }
+    
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="1" fill="%23ffffff" opacity="0.03"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>') repeat;
+      pointer-events: none;
+      z-index: 1;
+    }
+    
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: flex;
+      gap: 30px;
+      min-height: calc(100vh - 80px);
+      position: relative;
+      z-index: 2;
+    }
+    
+    /* Header */
+    .header {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      color: var(--dark);
+      padding: 24px 0;
+      margin-bottom: 30px;
+      box-shadow: var(--shadow-lg);
+      position: relative;
+      z-index: 10;
+    }
+    
+    .header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: var(--gradient-primary);
+      opacity: 0.05;
+      z-index: -1;
+    }
+    
+    .header-content {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .fest-title {
+      font-size: 2rem;
+      font-weight: 800;
+      letter-spacing: -1px;
+      background: var(--gradient-primary);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    .fest-subtitle {
+      font-size: 1rem;
+      color: var(--secondary);
+      margin-top: 6px;
+      font-weight: 500;
+    }
+    
+    .user-welcome {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      background: var(--gradient-card);
+      padding: 12px 20px;
+      border-radius: 50px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+    }
+    
+    .user-avatar {
+      width: 44px;
+      height: 44px;
+      background: var(--gradient-primary);
+      border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 20px;
-    }
-
-    .card {
-      background: #fff;
-      max-width: 700px;
-      width: 100%;
-      border-radius: 22px;
-      padding: 40px 30px;
-      box-shadow: 0 25px 60px rgba(0,0,0,.25);
-      text-align: center;
-      position: relative;
-    }
-
-    .avatar{
-  width:90px;
-  height:90px;
-  border-radius:50%;
-  margin:auto;
-  margin-bottom:18px;
-  background: linear-gradient(135deg,#6366f1,#8b5cf6);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  color:white;
-  font-size:42px;
-  position:relative;
-  box-shadow:0 10px 25px rgba(99,102,241,.45);
-}
-
-.avatar::before{
-  content:"";
-  position:absolute;
-  inset:-5px;
-  border-radius:50%;
-  background:linear-gradient(135deg,#06b6d4,#6366f1);
-  z-index:-1;
-  opacity:.6;
-  filter: blur(2px);
-}
-
-
-    h1 {
-      margin: 10px 0 5px;
-      color: #1e293b;
-      font-size: 1.9rem;
-    }
-
-    .sub {
-      color: #64748b;
-      font-size: .95rem;
-      margin-bottom: 25px;
-    }
-
-    .student-box {
-      background: #f8fafc;
-      border-radius: 14px;
-      padding: 18px;
-      margin-bottom: 25px;
-      border: 1px solid #e2e8f0;
-    }
-
-    .student-box h2 {
-      margin: 0;
+      color: white;
       font-size: 1.2rem;
-      color: #334155;
+      box-shadow: 0 4px 6px rgba(99, 102, 241, 0.3);
     }
-
-    .student-box p {
-      margin: 4px 0;
-      color: #64748b;
-      font-size: .9rem;
+    
+    /* Sidebar */
+    .sidebar {
+      width: 320px;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      border-radius: 20px;
+      padding: 32px;
+      box-shadow: var(--shadow-xl);
+      height: fit-content;
+      position: sticky;
+      top: 30px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      transition: all 0.3s ease;
     }
-
-    .events-title {
-      text-align: left;
-      font-weight: 700;
-      color: #334155;
-      margin-bottom: 12px;
+    
+    .sidebar:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.3);
     }
-
-    .event-list {
-      display: grid;
-      gap: 12px;
+    
+    .profile-header {
+      margin-bottom: 28px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
-
-    .event-item {
-      background: linear-gradient(135deg,#ecfeff,#f0fdfa);
-      border: 1px solid #99f6e4;
-      padding: 12px 14px;
-      border-radius: 12px;
+    
+    .avatar {
+      width: 90px;
+      height: 90px;
+      background: var(--gradient-primary);
+      border-radius: 50%;
       display: flex;
       align-items: center;
-      gap: 10px;
+      justify-content: center;
+      margin-bottom: 24px;
+      box-shadow: 0 8px 16px rgba(99, 102, 241, 0.3);
+      position: relative;
+      transition: all 0.3s ease;
+    }
+    
+    .avatar::before {
+      content: '';
+      position: absolute;
+      top: -4px;
+      left: -4px;
+      right: -4px;
+      bottom: -4px;
+      background: var(--gradient-accent);
+      border-radius: 50%;
+      opacity: 0.3;
+      z-index: -1;
+      animation: pulse-ring 2s infinite;
+    }
+    
+    @keyframes pulse-ring {
+      0% {
+        transform: scale(1);
+        opacity: 0.3;
+      }
+      50% {
+        transform: scale(1.05);
+        opacity: 0.1;
+      }
+      100% {
+        transform: scale(1);
+        opacity: 0.3;
+      }
+    }
+    
+    .avatar i {
+      font-size: 36px;
+      color: white;
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+    }
+    
+    .user-info h2 {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--dark);
+      margin-bottom: 10px;
+      letter-spacing: -0.5px;
+      line-height: 1.2;
+    }
+    
+    .user-info p {
+      color: var(--secondary);
+      font-size: 0.9rem;
+      margin-bottom: 4px;
+    }
+    
+    .stats {
+      margin: 32px 0;
+      padding: 28px 0;
+      border-top: 1px solid rgba(99, 102, 241, 0.1);
+      border-bottom: 1px solid rgba(99, 102, 241, 0.1);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+    
+    .stat-item {
+      text-align: center;
+    }
+    
+    .stat-value {
+      font-size: 2.2rem;
+      font-weight: 800;
+      background: var(--gradient-primary);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    
+    .stat-label {
+      font-size: 0.85rem;
+      color: var(--secondary);
+      margin-top: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 500;
+    }
+    
+    .logout-btn {
+      width: 100%;
+      padding: 14px 20px;
+      background: var(--gradient-card);
+      color: var(--error);
+      border: 2px solid rgba(239, 68, 68, 0.1);
+      border-radius: 12px;
+      font-size: 1rem;
       font-weight: 600;
-      color: #065f46;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
     }
-
-    .event-item i {
-      color: #10b981;
-      font-size: 1.1rem;
+    
+    .logout-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(239, 68, 68, 0.1), transparent);
+      transition: left 0.5s ease;
     }
-
-    .footer-note {
-      margin-top: 30px;
-      font-size: .85rem;
-      color: #64748b;
+    
+    .logout-btn:hover::before {
+      left: 100%;
     }
-
-    .count {
-      background: #6366f1;
-      color: #fff;
-      padding: 6px 14px;
+    
+    .logout-btn:hover {
+      background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+      border-color: var(--error);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
+    }
+    
+    /* Events Section */
+    .events-section {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
       border-radius: 20px;
-      font-size: .8rem;
-      margin-left: 6px;
+      padding: 36px;
+      box-shadow: var(--shadow-xl);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      transition: all 0.3s ease;
     }
-
-    .no-events{
-      color:#ef4444;
-      font-weight:600;
+    
+    .events-section:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.3);
     }
-    .logout-btn{
-  margin-top:28px;
-  width:100%;
-  padding:12px;
-  border:none;
-  border-radius:12px;
-  background:linear-gradient(135deg,#ef4444,#dc2626);
-  color:white;
-  font-size:1rem;
-  font-weight:600;
-  cursor:pointer;
-  transition:.25s;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:10px;
-}
-
-.logout-btn:hover{
-  transform:translateY(-2px);
-  box-shadow:0 10px 25px rgba(239,68,68,.4);
-}
-
+    
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 36px;
+      padding-bottom: 24px;
+      border-bottom: 2px solid rgba(99, 102, 241, 0.1);
+    }
+    
+    .section-header h3 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--dark);
+      letter-spacing: -0.5px;
+      position: relative;
+    }
+    
+    .section-header h3::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 0;
+      width: 60px;
+      height: 3px;
+      background: var(--gradient-primary);
+      border-radius: 2px;
+    }
+    
+    .events-count {
+      background: var(--gradient-primary);
+      color: white;
+      padding: 8px 20px;
+      border-radius: 25px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      border: none;
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .events-count::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      animation: shimmer 3s infinite;
+    }
+    
+    @keyframes shimmer {
+      0% { left: -100%; }
+      100% { left: 100%; }
+    }
+    
+    .events-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 28px;
+    }
+    
+    .event-card {
+      background: var(--gradient-card);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+      transition: all 0.3s ease;
+      border: 1px solid rgba(99, 102, 241, 0.1);
+      display: flex;
+      gap: 20px;
+      align-items: flex-start;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .event-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--gradient-primary);
+      transform: scaleX(0);
+      transition: transform 0.3s ease;
+    }
+    
+    .event-card:hover {
+      box-shadow: var(--shadow-xl);
+      transform: translateY(-4px) scale(1.02);
+      border-color: var(--primary-light);
+    }
+    
+    .event-card:hover::before {
+      transform: scaleX(1);
+    }
+    
+    .event-card.joined {
+      border-color: var(--success);
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, rgba(255, 255, 255, 0.95) 100%);
+    }
+    
+    .event-card.joined::before {
+      background: var(--gradient-success);
+      transform: scaleX(1);
+    }
+    
+    .event-card.processing {
+      opacity: 0.7;
+      pointer-events: none;
+      cursor: wait;
+    }
+    
+    .event-icon {
+      width: 56px;
+      height: 56px;
+      background: var(--gradient-primary);
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1.4rem;
+      flex-shrink: 0;
+      box-shadow: 0 6px 12px rgba(99, 102, 241, 0.3);
+      transition: all 0.3s ease;
+    }
+    
+    .event-card:hover .event-icon {
+      transform: rotate(5deg) scale(1.1);
+      box-shadow: 0 8px 16px rgba(99, 102, 241, 0.4);
+    }
+    
+    .event-details {
+      flex: 1;
+      min-width: 0;
+    }
+    
+    .event-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 12px;
+    }
+    
+    .event-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--dark);
+      margin-bottom: 0;
+      line-height: 1.3;
+      flex: 1;
+      letter-spacing: -0.3px;
+    }
+    
+    .event-category-badge {
+      background: var(--gradient-accent);
+      color: white;
+      padding: 6px 12px;
+      border-radius: 15px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      border: none;
+      flex-shrink: 0;
+      margin-left: 12px;
+      box-shadow: 0 2px 6px rgba(6, 182, 212, 0.3);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .event-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 16px;
+    }
+    
+    .event-status {
+      color: var(--success);
+      font-weight: 600;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    
+    .event-btn {
+      padding: 10px 24px;
+      border-radius: 10px;
+      border: 2px solid transparent;
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 120px;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .event-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.5s ease;
+    }
+    
+    .event-btn:hover::before {
+      left: 100%;
+    }
+    
+    .event-btn:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+    
+    .event-btn.processing {
+      cursor: wait;
+    }
+    
+    .btn-join {
+      background: var(--gradient-primary);
+      color: white;
+      border-color: transparent;
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+    }
+    
+    .btn-join:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(99, 102, 241, 0.4);
+    }
+    
+    .btn-remove {
+      background: var(--gradient-card);
+      color: var(--error);
+      border-color: rgba(239, 68, 68, 0.2);
+      box-shadow: 0 2px 6px rgba(239, 68, 68, 0.1);
+    }
+    
+    .btn-remove:hover:not(:disabled) {
+      background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
+    }
+    
+    .btn-text, .btn-loader {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    
+    .btn-loader i {
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    /* Footer */
+    .footer {
+      text-align: center;
+      padding: 32px;
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 0.9rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      margin-top: 50px;
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      position: relative;
+      z-index: 2;
+    }
+    
+    .mobile-menu-btn {
+      display: none;
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1000;
+      background: var(--gradient-primary);
+      color: white;
+      width: 52px;
+      height: 52px;
+      border-radius: 15px;
+      border: none;
+      font-size: 1.3rem;
+      cursor: pointer;
+      box-shadow: var(--shadow-xl);
+      transition: all 0.3s ease;
+    }
+    
+    .mobile-menu-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4);
+    }
+    
+    /* Responsive */
+    @media (max-width: 1100px) {
+      .container {
+        flex-direction: column;
+        padding: 0 20px;
+      }
+      
+      .sidebar {
+        width: 100%;
+        position: static;
+        margin-bottom: 24px;
+      }
+      
+      .mobile-menu-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      
+      .header-content {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+      }
+      
+      .user-welcome {
+        align-self: flex-end;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .events-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .events-section,
+      .sidebar {
+        padding: 24px;
+      }
+      
+      .container {
+        padding: 0 16px;
+      }
+      
+      .header-content {
+        padding: 0 16px;
+      }
+      
+      .mobile-menu-btn {
+        top: 16px;
+        right: 16px;
+      }
+      
+      .event-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+      }
+      
+      .event-category-badge {
+        margin-left: 0;
+      }
+    }
+    
+    /* Loading State */
+    .loading {
+      opacity: 0.6;
+      pointer-events: none;
+    }
+    
+    .event-card.loading {
+      animation: pulse 1.5s infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { opacity: 0.6; }
+      50% { opacity: 0.8; }
+    }
   </style>
 </head>
 
 <body>
+  <!-- Header -->
+  <header class="header">
+    <div class="header-content">
+      <div>
+        <h1 class="fest-title">Srishti-2k26</h1>
+        <p class="fest-subtitle">Annual Cultural Festival Dashboard</p>
+      </div>
+      <div class="user-welcome">
+        <div class="user-avatar">
+          <i class="fas fa-user"></i>
+        </div>
+        <span>Welcome back</span>
+      </div>
+    </div>
+  </header>
+  
+  <div class="container">
+    <!-- Sidebar Profile -->
+    <div class="sidebar">
+      <div class="profile-header">
+        <div class="avatar">
+          <i class="fas fa-user-graduate"></i>
+        </div>
+        <div class="user-info">
+          <h2 id="name">Loading...</h2>
+          <p id="roll"></p>
+          <p id="dept"></p>
+        </div>
+      </div>
+      
+      <div class="stats">
+        <div class="stat-item">
+          <div class="stat-value" id="joinedCount">0</div>
+          <div class="stat-label">Programs Registered</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value">–</div>
+          <div class="stat-label">Schedule</div>
+        </div>
+      </div>
+      
+      <button class="logout-btn" onclick="logout()">
+        <i class="fas fa-sign-out-alt"></i> Logout
+      </button>
+    </div>
+    
+    <!-- Events Section -->
+    <div class="events-section">
+      <div class="section-header" style="gap:16px; flex-wrap:wrap;">
+  <h3>Available Programs</h3>
 
-  <div class="card">
-    <div class="avatar">
-  <i class="fas fa-user-graduate"></i>
+  <input
+    type="text"
+    id="eventSearch"
+    placeholder="Search program..."
+    oninput="filterEvents()"
+    style="
+      padding:10px 14px;
+      border-radius:10px;
+      border:1px solid #e2e8f0;
+      outline:none;
+      font-size:0.95rem;
+      min-width:220px;
+    "
+  />
+
+  <div class="events-count" id="totalEvents">Loading...</div>
 </div>
 
-
-    <h1>Participation Confirmed</h1>
-    <div class="sub">Your registrations for Srishti-2k26 are successfully recorded.</div>
-
-    <div class="student-box">
-      <h2 id="name">Loading...</h2>
-      <p id="roll"></p>
-      <p id="dept"></p>
-    </div>
-
-    <div class="events-title">
-      Events Participated
-      <span class="count" id="count">0</span>
-    </div>
-
-    <div class="event-list" id="eventList">
-      Loading...
-    </div>
-
-    <button class="logout-btn" onclick="logoutUser()">
-  <i class="fas fa-sign-out-alt"></i> Logout
-</button>
-
-
-    <div class="footer-note">
-      ⚠️ Registrations are closed. No further changes are allowed.<br>
-      Please contact coordinators for any discrepancies.
+      
+      <div class="events-grid" id="events">
+        <!-- Events will be loaded here -->
+        <div class="event-card loading">
+          <div class="event-icon">
+            <i class="fas fa-spinner fa-spin"></i>
+          </div>
+          <div class="event-details">
+            <div class="event-header">
+              <h4 class="event-title">Loading Programs</h4>
+            </div>
+            <div class="event-actions">
+              <span class="event-status"></span>
+              <button class="event-btn" disabled>
+                <span class="btn-text">Please wait</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
-
+  
+  <footer class="footer">
+    <p>© 2026 Srishti Cultural Festival. All rights reserved.</p>
+  </footer>
 </body>
+
+
 </html>
