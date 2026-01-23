@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Thank You | Srishti-2k26</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBUoNm0UQOSKm0_s8k_uarYYn5nnbvASs8",
+  authDomain: "srishtiwebapp.firebaseapp.com",
+  projectId: "srishtiwebapp"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+onAuthStateChanged(auth, async (user) => {
+  if (!user) {
+    window.location.href = "sjniusghcvbiasoijhjg.html";
+    return;
+  }
+
+  const snap = await getDoc(doc(db, "users", user.uid));
+  if (!snap.exists()) return;
+
+  const u = snap.data();
+  const events = u.selectedEvents || [];
+
+  document.getElementById("username").innerText = u.fullName;
+
+  /* 🎖 ROLE DECISION */
+  let role = "";
+  const badge = document.getElementById("badge");
+  const badgeIcon = document.getElementById("badgeIcon");
+
+  if (
+    u.course?.toLowerCase().includes("bsc") &&
+    u.course?.toLowerCase().includes("ag") &&
+    String(u.year).includes("3")
+  ) {
+    role = "Organising Member";
+    badge.innerHTML = `<i class="fas fa-crown"></i> Organising Member`;
+    badge.classList.add("organiser");
+    badgeIcon.innerHTML = '<i class="fas fa-crown fa-2x"></i>';
+    document.body.classList.add("organiser-theme");
+  }
+  else if (events.length > 0) {
+    role = "Active Participant";
+    badge.innerHTML = `<i class="fas fa-trophy"></i> Active Participant`;
+    badge.classList.add("participant");
+    badgeIcon.innerHTML = '<i class="fas fa-trophy fa-2x"></i>';
+    document.body.classList.add("participant-theme");
+  }
+  else {
+    role = "Proud Audience";
+    badge.innerHTML = `<i class="fas fa-heart"></i> Proud Audience`;
+    badge.classList.add("audience");
+    badgeIcon.innerHTML = '<i class="fas fa-heart fa-2x"></i>';
+    document.getElementById("noEvents").style.display = "block";
+    document.body.classList.add("audience-theme");
+  }
+
+  /* 📋 EVENT LIST */
+  const list = document.getElementById("eventList");
+  if (events.length > 0) {
+    events.forEach(e => {
+      const li = document.createElement("li");
+      li.innerHTML = `<div class="event-item">
+        <i class="fas fa-medal"></i>
+        <span class="event-name">${e}</span>
+      </div>`;
+      list.appendChild(li);
+    });
+    document.getElementById("eventCount").innerText = 
+      `You participated in ${events.length} event${events.length > 1 ? "s" : ""} 🎯`;
+    document.getElementById("journeyTitle").innerText = "Your Srishti Journey";
+  } else {
+    document.getElementById("journeyTitle").innerText = "Your Support Matters";
+  }
+
+  /* 📲 WHATSAPP SHARE */
+  const shareMsg = 
+`I am ${u.fullName} ✨
+Role: ${role}
+Part of Srishti-2k26 at IAS BHU ❤️🎉
+
+${events.length > 0 ? `Events: ${events.join(", ")}\n` : ""}
+Such an unforgettable fest!
+#Srishti2k26 #IASBHU #MemoriesForLife`;
+
+  document.getElementById("shareBtn").onclick = () => {
+    window.open(`https://wa.me/?text=${encodeURIComponent(shareMsg)}`, "_blank");
+  };
+
+  /* 📷 DOWNLOAD BADGE */
+  document.getElementById("downloadBadge").onclick = () => {
+    const badgeText = `${u.fullName} | ${role} | Srishti-2k26`;
+    alert(`Your digital badge: ${badgeText}\n\nSave this as your keepsake! 🏆`);
+  };
+
+  /* 🎉 CONFETTI ANIMATION */
+  setTimeout(() => {
+    confetti({ 
+      particleCount: 300, 
+      spread: 100, 
+      origin: { y: 0.6 },
+      colors: ['#667eea', '#764ba2', '#4f46e5', '#8b5cf6']
+    });
+  }, 500);
+  
+  setTimeout(() => {
+    confetti({ 
+      particleCount: 200, 
+      angle: 60, 
+      spread: 80, 
+      origin: { x: 0, y: 0.6 },
+      colors: ['#667eea', '#4f46e5']
+    });
+    confetti({ 
+      particleCount: 200, 
+      angle: 120, 
+      spread: 80, 
+      origin: { x: 1, y: 0.6 },
+      colors: ['#764ba2', '#8b5cf6']
+    });
+  }, 1000);
+});
+</script>
+
+<style>
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  min-height: 100vh;
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #4f46e5 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  transition: background 1s ease;
+}
+
+body.organiser-theme {
+  background: linear-gradient(135deg, #6b21a8 0%, #9333ea 50%, #c026d3 100%);
+}
+
+body.participant-theme {
+  background: linear-gradient(135deg, #059669 0%, #10b981 50%, #34d399 100%);
+}
+
+body.audience-theme {
+  background: linear-gradient(135deg, #0369a1 0%, #0ea5e9 50%, #38bdf8 100%);
+}
+
+.card {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  max-width: 1000px;
+  width: 100%;
+  border-radius: 32px;
+  padding: 50px 40px;
+  box-shadow: 
+    0 20px 60px rgba(0, 0, 0, 0.15),
+    0 0 0 1px rgba(255, 255, 255, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  text-align: center;
+  animation: slideIn 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: linear-gradient(90deg, #667eea, #764ba2, #4f46e5);
+  border-radius: 32px 32px 0 0;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(40px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.header-section {
+  margin-bottom: 30px;
+}
+
+.thank-you-icon {
+  font-size: 80px;
+  margin-bottom: 20px;
+  animation: float 3s ease-in-out infinite;
+  display: inline-block;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+h1 {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 3rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #667eea, #764ba2, #4f46e5);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 10px;
+  letter-spacing: -0.5px;
+}
+
+.username {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #1e293b;
+  margin: 10px 0;
+  position: relative;
+  display: inline-block;
+}
+
+.username::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 3px;
+  background: linear-gradient(90deg, #667eea, #764ba2);
+  border-radius: 2px;
+}
+
+.badge-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  margin: 25px 0;
+}
+
+.badge-icon {
+  padding: 15px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+  color: #667eea;
+}
+
+.badge {
+  display: inline-block;
+  padding: 12px 28px;
+  border-radius: 50px;
+  font-weight: 700;
+  font-size: 1.1rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.badge.participant {
+  background: linear-gradient(135deg, #10b981, #34d399);
+  color: white;
+}
+
+.badge.audience {
+  background: linear-gradient(135deg, #0ea5e9, #38bdf8);
+  color: white;
+}
+
+.badge.organiser {
+  background: linear-gradient(135deg, #9333ea, #c026d3);
+  color: white;
+}
+
+.gratitude-msg {
+  color: #475569;
+  line-height: 1.8;
+  font-size: 1.1rem;
+  margin: 25px auto;
+  max-width: 700px;
+  padding: 20px;
+  background: rgba(241, 245, 249, 0.5);
+  border-radius: 16px;
+  border-left: 4px solid #667eea;
+}
+
+.event-count {
+  font-weight: 700;
+  color: #4338ca;
+  margin: 25px 0;
+  font-size: 1.2rem;
+  padding: 10px 20px;
+  background: rgba(102, 126, 234, 0.1);
+  border-radius: 50px;
+  display: inline-block;
+}
+
+.journey-section {
+  text-align: left;
+  margin: 35px 0;
+  padding: 30px;
+  background: rgba(248, 250, 252, 0.7);
+  border-radius: 20px;
+  border: 1px solid rgba(226, 232, 240, 0.5);
+}
+
+.section-title {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1.8rem;
+  color: #4f46e5;
+  margin-bottom: 25px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.no-events {
+  display: none;
+  background: linear-gradient(135deg, #ecfeff, #cffafe);
+  padding: 25px;
+  border-radius: 16px;
+  color: #0369a1;
+  text-align: center;
+  font-weight: 600;
+  font-size: 1.1rem;
+  margin: 20px 0;
+  border: 2px dashed #06b6d4;
+}
+
+.events-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.event-item {
+  background: white;
+  padding: 18px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: all 0.3s ease;
+  border-left: 4px solid #667eea;
+}
+
+.event-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+  border-left-color: #764ba2;
+}
+
+.event-item i {
+  color: #667eea;
+  font-size: 1.2rem;
+}
+
+.event-name {
+  font-weight: 600;
+  color: #334155;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  margin: 30px 0;
+  flex-wrap: wrap;
+}
+
+.btn {
+  padding: 16px 32px;
+  border-radius: 50px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: all 0.3s ease;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #25D366, #128C7E);
+  color: white;
+  box-shadow: 0 8px 20px rgba(37, 211, 102, 0.3);
+}
+
+.btn-secondary {
+  background: linear-gradient(135deg, #667eea, #4f46e5);
+  color: white;
+  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+}
+
+.btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+}
+
+.gratitude-section {
+  margin-top: 40px;
+  padding-top: 30px;
+  border-top: 2px dashed #e2e8f0;
+}
+
+.team-signature {
+  font-weight: 600;
+  color: #334155;
+  font-size: 1.1rem;
+  line-height: 1.6;
+}
+
+.dev-message {
+  margin-top: 30px;
+  background: linear-gradient(135deg, #6366f1, #3b82f6);
+  color: white;
+  padding: 25px;
+  border-radius: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+.dev-message::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #8b5cf6, #ec4899);
+}
+
+.footer {
+  margin-top: 30px;
+  font-size: 0.9rem;
+  color: #64748b;
+  padding-top: 20px;
+  border-top: 1px solid #e2e8f0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .card {
+    padding: 30px 20px;
+    border-radius: 24px;
+  }
+  
+  h1 {
+    font-size: 2.2rem;
+  }
+  
+  .username {
+    font-size: 1.8rem;
+  }
+  
+  .badge-container {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .events-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .action-buttons {
+    flex-direction: column;
+  }
+  
+  .btn {
+    width: 100%;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+  <div class="header-section">
+    <div class="thank-you-icon">
+      <i class="fas fa-award"></i>
+    </div>
+    <h1>Thank You</h1>
+    <div class="username" id="username">Participant</div>
+    
+    <div class="badge-container">
+      <div class="badge-icon" id="badgeIcon">
+        <i class="fas fa-star fa-2x"></i>
+      </div>
+      <div class="badge" id="badge"></div>
+    </div>
+  </div>
+
+  <div class="gratitude-msg">
+    Your energy, dedication, and unwavering support transformed <b>Srishti-2k26</b> into a legendary celebration.  
+    Every cheer, every performance, every moment was made magical because of you. ✨
+  </div>
+
+  <div class="event-count" id="eventCount"></div>
+
+  <div class="journey-section">
+    <h3 class="section-title" id="journeyTitle">
+      <i class="fas fa-road"></i> Your Srishti Journey
+    </h3>
+
+    <div id="noEvents" class="no-events">
+      <i class="fas fa-hands-clapping fa-2x" style="margin-bottom: 15px;"></i><br>
+      You may not have been on stage, but your applause was the heartbeat of every performance.  
+      The magic happened because you believed. 💙👏
+    </div>
+
+    <div class="events-grid" id="eventList"></div>
+  </div>
+
+  <div class="action-buttons">
+    <button class="btn btn-primary" id="shareBtn">
+      <i class="fab fa-whatsapp"></i> Share Your Story
+    </button>
+    <button class="btn btn-secondary" id="downloadBadge">
+      <i class="fas fa-download"></i> Save Your Badge
+    </button>
+  </div>
+
+  <div class="gratitude-section">
+    <div class="team-signature">
+      With deepest gratitude and cherished memories,<br>
+      <b style="color: #4f46e5; font-size: 1.2rem;">Convenors & Coordinators</b><br>
+      B.Sc Agriculture — 3rd Year 🌾<br>
+      <span style="color: #667eea; font-size: 0.95rem;">Institute of Agricultural Sciences, BHU</span>
+    </div>
+  </div>
+
+  <div class="dev-message">
+    <div style="margin-bottom: 15px;">
+      <b style="font-size: 1.2rem;">From the Developer</b>
+    </div>
+    This digital celebration was crafted with immense love for Srishti and every soul that made it magical.  
+    May this page serve as a timeless keepsake of your unforgettable journey.<br><br>
+    <div style="display: flex; align-items: center; gap: 10px; margin-top: 10px;">
+      <div style="width: 40px; height: 40px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #6366f1;">
+        <i class="fas fa-code"></i>
+      </div>
+      <div>
+        <b>Rishabh Mishra</b><br>
+        <small>Building memories through code 💻✨</small>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    Srishti-2k26 • Moments Made Eternal • Forever in Our Hearts ❤️<br>
+    <small style="opacity: 0.8;">© 2026 Institute of Agricultural Sciences, BHU</small>
+  </div>
+</div>
+
+</body>
+</html>
