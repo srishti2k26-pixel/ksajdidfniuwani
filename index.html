@@ -552,11 +552,11 @@
         .marquee-track {
             display: flex;
             width: fit-content;
-            animation: marqueeScroll 40s linear infinite;
+            animation: marqueeScroll 22s linear infinite;
         }
         
         .marquee-reverse {
-            animation: marqueeScrollReverse 45s linear infinite;
+            animation: marqueeScrollReverse 26s linear infinite;
             margin-top: 2rem;
         }
         
@@ -686,6 +686,21 @@
             margin-top: 0.5rem;
         }
         
+        .marquee-container {
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+}
+
+.marquee-container::-webkit-scrollbar {
+    height: 6px;
+}
+.marquee-container::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.4);
+    border-radius: 10px;
+}
+
+
         /* Static Sponsors Section */
         .sponsor-tier {
             margin-bottom: 4rem;
@@ -1403,11 +1418,11 @@
                         
                         
                         
-                        <a href="https://www.iariwallah.com" class="sponsor-title2">
+                        <a href="https://share.google/FEzd15AYIGH5SG4qA" class="sponsor-title2">
                             <div class="sponsor-icon">
-                                <i class="fas fa-seedling"></i>
+                                <i class="fas fa-birthday-cake"></i>
                             </div>
-                            <span class="sponsor-name">IARI WALA</span>
+                            <span class="sponsor-name">Kiran Cafe&Bakery</span>
                             <span class="sponsor-tag">Sponsor!</span>
                         </a>
                         
