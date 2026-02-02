@@ -229,7 +229,7 @@ loginForm.addEventListener('submit', async (e) => {
         showMessage(loginMessage, 'Login successful! Redirecting...', 'success');
 
         setTimeout(() => {
-            window.location.href = 'lijhgfdxfghbghjuygh.html';
+            window.location.href = 'thankyou.html';
         }, 1200);
 
     } catch (error) {
@@ -243,7 +243,7 @@ loginForm.addEventListener('submit', async (e) => {
 
 // Protect dashboard and enforce email verification
 onAuthStateChanged(auth, (user) => {
-    if (window.location.pathname.includes("lijhgfdxfghbghjuygh.html")) {
+    if (window.location.pathname.includes("thankyou.html")) {
         if (!user) {
             // Not logged in
             window.location.href = "sjniusghcvbiasoijhjg.html";
