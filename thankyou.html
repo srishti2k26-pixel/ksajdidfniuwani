@@ -136,7 +136,7 @@ onAuthStateChanged(auth, async (user) => {
       list.appendChild(li);
     });
     document.getElementById("eventCount").innerText = 
-      `You participated in ${events.length} event${events.length > 1 ? "s" : ""} 🎯`;
+      `You Registered for ${events.length} event${events.length > 1 ? "s" : ""} 🎯`;
     document.getElementById("journeyTitle").innerText = "Your Srishti Journey";
   } else {
     document.getElementById("journeyTitle").innerText = "Your Support Matters";
@@ -159,7 +159,7 @@ Such an unforgettable fest!
   /* 📷 DOWNLOAD BADGE */
   document.getElementById("downloadBadge").onclick = () => {
     const badgeText = `${u.fullName} | ${role} | Srishti-2k26`;
-    alert(`Your digital badge: ${badgeText}\n\nSave this as your keepsake! 🏆`);
+    alert(`Your digital badge: ${badgeText}\n\nScreenShot this as your keepsake! 🏆`);
   };
 
   /* 🎉 CONFETTI ANIMATION */
@@ -601,7 +601,7 @@ h1 {
       <i class="fab fa-whatsapp"></i> Share Your Story
     </button>
     <button class="btn btn-secondary" id="downloadBadge">
-      <i class="fas fa-download"></i> Save Your Badge
+      <i class="fas fa-download"></i> See Your Badge
     </button>
   </div>
 
@@ -639,3 +639,4 @@ h1 {
 
 </body>
 </html>
+
