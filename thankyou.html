@@ -37,30 +37,48 @@ onAuthStateChanged(auth, async (user) => {
 
   document.getElementById("username").innerText = u.fullName;
 
-  /* 🎖 ROLE DECISION */
+  /* 🎖 ROLE DECISION (updated to use degreeName + classYear) */
   let role = "";
   const badge = document.getElementById("badge");
   const badgeIcon = document.getElementById("badgeIcon");
 
-  if (
-    u.course?.toLowerCase().includes("bsc") &&
-    u.course?.toLowerCase().includes("ag") &&
-    String(u.year).includes("3")
-  ) {
-    role = "Organising Member";
-    badge.innerHTML = `<i class="fas fa-crown"></i> Organising Member`;
-    badge.classList.add("organiser");
-    badgeIcon.innerHTML = '<i class="fas fa-crown fa-2x"></i>';
-    document.body.classList.add("organiser-theme");
-  }
-  else if (events.length > 0) {
+  // Normalize fields for robust matching
+  const classYearRaw = (u.classYear || "").toString();
+  const degreeNameRaw = (u.degreeName || "").toString();
+
+  const is3rdYear = /3rd\s*-?\s*year/i.test(classYearRaw) || /third\s*year/i.test(classYearRaw);
+  const isBSc = /b\.?\s*sc/i.test(degreeNameRaw) || /\bbsc\b/i.test(degreeNameRaw);
+
+  const isOrganiser = is3rdYear && isBSc;
+  const hasEvents = events.length > 0;
+
+  // reset classes to avoid accumulation
+  badge.className = "badge";
+  badgeIcon.className = "badge-icon";
+  document.body.classList.remove("organiser-theme", "participant-theme", "audience-theme");
+
+  if (isOrganiser) {
+    if (hasEvents) {
+      role = "Organiser/Co-ordinator · Active Participant";
+      badge.innerHTML = `<i class="fas fa-crown"></i> Organiser / Co-ordinator`;
+      badge.classList.add("organiser");
+      badgeIcon.innerHTML = '<i class="fas fa-crown fa-2x"></i>';
+      document.body.classList.add("organiser-theme");
+    } else {
+      role = "Organiser/Co-ordinator";
+      badge.innerHTML = `<i class="fas fa-crown"></i> Organiser / Co-ordinator`;
+      badge.classList.add("organiser");
+      badgeIcon.innerHTML = '<i class="fas fa-crown fa-2x"></i>';
+      document.body.classList.add("organiser-theme");
+      document.getElementById("noEvents").style.display = "block";
+    }
+  } else if (hasEvents) {
     role = "Active Participant";
     badge.innerHTML = `<i class="fas fa-trophy"></i> Active Participant`;
     badge.classList.add("participant");
     badgeIcon.innerHTML = '<i class="fas fa-trophy fa-2x"></i>';
     document.body.classList.add("participant-theme");
-  }
-  else {
+  } else {
     role = "Proud Audience";
     badge.innerHTML = `<i class="fas fa-heart"></i> Proud Audience`;
     badge.classList.add("audience");
@@ -81,7 +99,7 @@ onAuthStateChanged(auth, async (user) => {
       list.appendChild(li);
     });
     document.getElementById("eventCount").innerText = 
-      `You participated in ${events.length} event${events.length > 1 ? "s" : ""} 🎯`;
+      `You applied for ${events.length} event${events.length > 1 ? "s" : ""} 🎯`;
     document.getElementById("journeyTitle").innerText = "Your Srishti Journey";
   } else {
     document.getElementById("journeyTitle").innerText = "Your Support Matters";
